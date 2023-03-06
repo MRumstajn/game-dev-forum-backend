@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 060320231924
+      created: 06-03-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: post
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: content
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: thread_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_post_thread_id
+                    references: thread(id)
+
+              - column:
+                  name: author_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_post_author_id
+                    references: forum_user(id)
+
+              - column:
+                  name: creation_date
+                  type: date
+                  constraints:
+                    nullable: false

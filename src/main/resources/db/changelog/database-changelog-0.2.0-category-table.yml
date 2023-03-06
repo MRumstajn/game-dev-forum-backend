@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 060320231920
+      created: 06-03-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: section_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_category_section_id
+                    references: section(id)

@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 060320231919
+      created: 06-03-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: section
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
