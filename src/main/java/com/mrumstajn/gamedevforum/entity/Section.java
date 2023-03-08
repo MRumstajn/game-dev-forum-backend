@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -16,7 +13,4 @@ public class Section {
     private Long id;
 
     private String title;
-
-    @OneToMany(mappedBy = "sectionId")
-    private List<Category> categories = new ArrayList<>();
 }

@@ -3,8 +3,6 @@ package com.mrumstajn.gamedevforum.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class CategoryResponse {
@@ -13,6 +11,4 @@ public class CategoryResponse {
     private Long sectionId;
 
     private String title;
-
-    private List<ForumThreadResponse> threads;
 }

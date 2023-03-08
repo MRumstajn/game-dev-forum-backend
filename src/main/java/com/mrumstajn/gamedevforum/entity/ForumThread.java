@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "thread")
@@ -25,7 +23,4 @@ public class ForumThread {
     private ForumUser author;
 
     private LocalDate creationDate;
-
-    @OneToMany(mappedBy = "threadId")
-    private List<Post> posts = new ArrayList<>();
 }
