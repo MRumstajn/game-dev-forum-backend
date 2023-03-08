@@ -4,21 +4,23 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "thread")
 @Getter
 @Setter
-public class Category {
+public class ForumThread {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long sectionId;
+    private Long categoryId;
 
     private String title;
 
-    @OneToMany(mappedBy = "categoryId")
-    private List<ForumThread> threads = new ArrayList<>();
+    @ManyToOne
+    private ForumUser author;
+
+    private LocalDate creationDate;
 }
