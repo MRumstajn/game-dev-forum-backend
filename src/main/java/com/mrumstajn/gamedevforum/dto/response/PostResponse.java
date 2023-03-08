@@ -4,20 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
-public class ForumThreadResponse {
+public class PostResponse {
     private Long id;
-
-    private Long categoryId;
 
     private ForumUserResponse author;
 
+    private String content;
+
     private LocalDate creationDate;
 
-    private String title;
-
-    private List<PostResponse> posts;
+    private Long threadId;
 }
