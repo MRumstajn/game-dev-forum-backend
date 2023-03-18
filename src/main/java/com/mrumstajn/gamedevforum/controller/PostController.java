@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
+import com.mrumstajn.gamedevforum.dto.request.EditPostRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchPostRequest;
 import com.mrumstajn.gamedevforum.dto.response.PostResponse;
 import com.mrumstajn.gamedevforum.entity.Post;
@@ -42,5 +43,17 @@ public class PostController {
 
         return ResponseEntity.created(URI.create("/posts/" + newPost.getId()))
                 .body(mapper.convertValue(newPost, PostResponse.class));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PostResponse> edit(@PathVariable Long id, @RequestBody @Valid EditPostRequest request){
+        return ResponseEntity.ok(mapper.convertValue(postCommandService.edit(id ,request), PostResponse.class));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        postCommandService.delete(id);
+
+        return ResponseEntity.ok().build();
     }
 }

@@ -2,10 +2,12 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
+import com.mrumstajn.gamedevforum.dto.request.EditPostRequest;
 import com.mrumstajn.gamedevforum.entity.Post;
 import com.mrumstajn.gamedevforum.repository.PostRepository;
 import com.mrumstajn.gamedevforum.service.command.PostCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
+import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class PostCommandServiceImpl implements PostCommandService {
     private final PostRepository postRepository;
+
+    private final PostQueryService postQueryService;
 
     private final ForumUserQueryService forumUserQueryService;
 
@@ -27,5 +31,20 @@ public class PostCommandServiceImpl implements PostCommandService {
         newPost.setAuthor(forumUserQueryService.getById(request.getAuthorId()));
 
         return postRepository.save(newPost);
+    }
+
+    @Override
+    public Post edit(Long id, EditPostRequest request) {
+        Post existingPost = postQueryService.getById(id);
+        existingPost.setContent(request.getContent());
+
+        return postRepository.save(existingPost);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Post existingPost = postQueryService.getById(id);
+
+        postRepository.delete(existingPost);
     }
 }
