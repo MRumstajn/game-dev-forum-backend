@@ -1,6 +1,5 @@
 package com.mrumstajn.gamedevforum.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mrumstajn.gamedevforum.dto.request.CreateForumUserRequest;
 import com.mrumstajn.gamedevforum.dto.response.ForumUserResponse;
 import com.mrumstajn.gamedevforum.entity.ForumUser;
@@ -8,6 +7,7 @@ import com.mrumstajn.gamedevforum.service.command.ForumUserCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +21,11 @@ public class ForumUserController {
 
     private final ForumUserCommandService forumUserCommandService;
 
-    private final ObjectMapper mapper;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/{id}")
     public ResponseEntity<ForumUserResponse> getById(@PathVariable Long id){
-        return ResponseEntity.ok(mapper.convertValue(forumUserQueryService.getById(id), ForumUserResponse.class));
+        return ResponseEntity.ok(modelMapper.map(forumUserQueryService.getById(id), ForumUserResponse.class));
     }
 
     @PostMapping
@@ -33,6 +33,6 @@ public class ForumUserController {
         ForumUser newUser = forumUserCommandService.create(request);
 
         return ResponseEntity.created(URI.create("/users/" + newUser.getId()))
-                .body(mapper.convertValue(newUser, ForumUserResponse.class));
+                .body(modelMapper.map(newUser, ForumUserResponse.class));
     }
 }

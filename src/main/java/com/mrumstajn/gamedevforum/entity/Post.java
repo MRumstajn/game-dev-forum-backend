@@ -22,4 +22,8 @@ public class Post {
     private LocalDate creationDate;
 
     private Long threadId;
+
+    private Long likes = 0L;
+
+    private Long dislikes = 0L;
 }

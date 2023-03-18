@@ -42,3 +42,15 @@ databaseChangeLog:
                   type: date
                   constraints:
                     nullable: false
+
+              - column:
+                  name: likes
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: dislikes
+                  type: bigint
+                  constraints:
+                    nullable: false

@@ -13,4 +13,8 @@ public class SearchPostRequest {
     private Long authorId;
 
     private LocalDate creationDate;
+
+    private Long likes;
+
+    private Long dislikes;
 }

@@ -1,12 +1,12 @@
 package com.mrumstajn.gamedevforum.service.command.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mrumstajn.gamedevforum.dto.request.CreateForumThreadRequest;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.repository.ForumThreadRepository;
 import com.mrumstajn.gamedevforum.service.command.ForumThreadCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,11 +18,11 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
 
     private final ForumUserQueryService forumUserQueryService;
 
-    private final ObjectMapper mapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public ForumThread create(CreateForumThreadRequest request) {
-        ForumThread newThread = mapper.convertValue(request, ForumThread.class);
+        ForumThread newThread = modelMapper.map(request, ForumThread.class);
         newThread.setAuthor(forumUserQueryService.getById(request.getAuthorId()));
         newThread.setCreationDate(LocalDate.now());
 

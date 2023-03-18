@@ -1,6 +1,5 @@
 package com.mrumstajn.gamedevforum.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mrumstajn.gamedevforum.dto.request.CategoryStatisticRequest;
 import com.mrumstajn.gamedevforum.dto.response.CategoryStatisticResponse;
 import com.mrumstajn.gamedevforum.dto.response.CategoryResponse;
@@ -11,6 +10,7 @@ import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +29,12 @@ public class StatisticController {
 
     private final ForumUserQueryService forumUserQueryService;
 
-    private final ObjectMapper mapper;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/popular-categories")
     public ResponseEntity<List<CategoryResponse>> getPopularCategories() {
         return ResponseEntity.ok(categoryQueryService.getTopNSortedByThreadCount(3).stream()
-                .map(category -> mapper.convertValue(category, CategoryResponse.class)).toList());
+                .map(category -> modelMapper.map(category, CategoryResponse.class)).toList());
     }
 
     @GetMapping("/overall-statistics")

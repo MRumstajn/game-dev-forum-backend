@@ -7,6 +7,7 @@ import net.croz.nrich.search.api.factory.SearchExecutorJpaRepositoryFactoryBean;
 import net.croz.nrich.search.converter.DefaultStringToEntityPropertyMapConverter;
 import net.croz.nrich.search.converter.DefaultStringToTypeConverter;
 import net.croz.nrich.search.factory.SearchRepositoryFactorySupportFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -36,5 +37,14 @@ public class ApplicationConfig {
     @Bean
     public RepositoryFactorySupportFactory searchRepositoryFactorySupportFactory(StringToEntityPropertyMapConverter stringToEntityPropertyMapConverter) {
         return new SearchRepositoryFactorySupportFactory(stringToEntityPropertyMapConverter);
+    }
+
+    @Bean
+    public ModelMapper modelMapper(){
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
+        return modelMapper;
     }
 }
