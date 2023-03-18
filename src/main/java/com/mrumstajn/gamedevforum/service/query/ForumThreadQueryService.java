@@ -10,4 +10,8 @@ public interface ForumThreadQueryService {
     ForumThread getById(Long id);
 
     List<ForumThread> search(SearchForumThreadRequest request);
+
+    Long getTotalCount();
+
+    Long getTotalCountByCategoryId(Long categoryId);
 }

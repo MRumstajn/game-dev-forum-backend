@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.repository.CategoryRepository;
 import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,5 +24,15 @@ public class CategoryQueryServiceImpl implements CategoryQueryService {
     @Override
     public List<Category> search(SearchCategoriesRequest request) {
         return categoryRepository.findBySectionId(request.getSectionId());
+    }
+
+    @Override
+    public List<Category> getTopNSortedByThreadCount(int count) {
+        return categoryRepository.findTopByThreadCount(Pageable.ofSize(count).withPage(0));
+    }
+
+    @Override
+    public long getTotalCount() {
+        return categoryRepository.count();
     }
 }

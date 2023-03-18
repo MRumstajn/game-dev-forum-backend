@@ -24,4 +24,16 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
     public List<ForumThread> search(SearchForumThreadRequest request) {
         return forumThreadRepository.findByCategoryId(request.getCategoryId());
     }
+
+    @Override
+    public Long getTotalCount() {
+        return forumThreadRepository.count();
+    }
+
+    @Override
+    public Long getTotalCountByCategoryId(Long categoryId) {
+        getById(categoryId); // check if category exists first
+
+        return forumThreadRepository.countAllByCategoryId(categoryId);
+    }
 }

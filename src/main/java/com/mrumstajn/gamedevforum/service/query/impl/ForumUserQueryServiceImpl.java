@@ -16,4 +16,9 @@ public class ForumUserQueryServiceImpl implements ForumUserQueryService {
     public ForumUser getById(Long id) {
         return forumUserRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
     }
+
+    @Override
+    public Long getTotalCount() {
+        return forumUserRepository.count();
+    }
 }

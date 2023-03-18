@@ -10,4 +10,6 @@ public interface PostQueryService {
     Post getById(Long id);
 
     List<Post> search(SearchPostRequest request);
+
+    Long getTotalCount();
 }

@@ -8,4 +8,6 @@ import java.util.List;
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Long> {
 
     List<ForumThread> findByCategoryId(Long categoryId);
+
+    Long countAllByCategoryId(Long categoryId);
 }

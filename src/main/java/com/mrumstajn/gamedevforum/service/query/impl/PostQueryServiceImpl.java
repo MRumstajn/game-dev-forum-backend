@@ -24,4 +24,9 @@ public class PostQueryServiceImpl implements PostQueryService {
     public List<Post> search(SearchPostRequest request) {
         return postRepository.findByThreadId(request.getThreadId());
     }
+
+    @Override
+    public Long getTotalCount() {
+        return postRepository.count();
+    }
 }
