@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.repository.CategoryRepository;
 import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import net.croz.nrich.search.api.model.SearchConfiguration;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,12 @@ public class CategoryQueryServiceImpl implements CategoryQueryService {
 
     @Override
     public List<Category> search(SearchCategoriesRequest request) {
-        return categoryRepository.findBySectionId(request.getSectionId());
+        SearchConfiguration<Category, Category, SearchCategoriesRequest> searchConfiguration = SearchConfiguration.<Category, Category, SearchCategoriesRequest>builder()
+                .resolvePropertyMappingUsingPrefix(true)
+                .resultClass(Category.class)
+                .build();
+
+        return categoryRepository.findAll(request, searchConfiguration);
     }
 
     @Override

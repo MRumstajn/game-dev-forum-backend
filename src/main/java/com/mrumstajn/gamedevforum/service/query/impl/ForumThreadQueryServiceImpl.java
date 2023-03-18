@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.repository.ForumThreadRepository;
 import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import net.croz.nrich.search.api.model.SearchConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,12 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
 
     @Override
     public List<ForumThread> search(SearchForumThreadRequest request) {
-        return forumThreadRepository.findByCategoryId(request.getCategoryId());
+        SearchConfiguration<ForumThread, ForumThread, SearchForumThreadRequest> searchConfiguration = SearchConfiguration.<ForumThread, ForumThread, SearchForumThreadRequest>builder()
+                .resolvePropertyMappingUsingPrefix(true)
+                .resultClass(ForumThread.class)
+                .build();
+
+        return forumThreadRepository.findAll(request, searchConfiguration);
     }
 
     @Override

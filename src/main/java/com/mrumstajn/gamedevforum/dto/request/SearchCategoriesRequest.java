@@ -7,4 +7,6 @@ import lombok.Setter;
 @Setter
 public class SearchCategoriesRequest {
     private Long sectionId;
+
+    private String title;
 }

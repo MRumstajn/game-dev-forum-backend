@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.repository.PostRepository;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import net.croz.nrich.search.api.model.SearchConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,12 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     @Override
     public List<Post> search(SearchPostRequest request) {
-        return postRepository.findByThreadId(request.getThreadId());
+        SearchConfiguration<Post, Post, SearchPostRequest> searchConfiguration = SearchConfiguration.<Post, Post, SearchPostRequest>builder()
+                .resolvePropertyMappingUsingPrefix(true)
+                .resultClass(Post.class)
+                .build();
+
+        return postRepository.findAll(request, searchConfiguration);
     }
 
     @Override
