@@ -4,6 +4,7 @@ import com.mrumstajn.gamedevforum.dto.request.CreateForumUserRequest;
 import com.mrumstajn.gamedevforum.entity.ForumUser;
 import com.mrumstajn.gamedevforum.repository.ForumUserRepository;
 import com.mrumstajn.gamedevforum.service.command.ForumUserCommandService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ForumUserCommandServiceImpl implements ForumUserCommandService {
     private final ForumUserRepository forumUserRepository;

@@ -7,6 +7,7 @@ import com.mrumstajn.gamedevforum.repository.PostRepository;
 import com.mrumstajn.gamedevforum.service.command.PostCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PostCommandServiceImpl implements PostCommandService {
     private final PostRepository postRepository;

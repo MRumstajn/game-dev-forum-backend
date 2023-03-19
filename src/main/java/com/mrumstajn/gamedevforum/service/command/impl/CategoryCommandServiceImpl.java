@@ -4,11 +4,13 @@ import com.mrumstajn.gamedevforum.dto.request.CreateCategoryRequest;
 import com.mrumstajn.gamedevforum.entity.Category;
 import com.mrumstajn.gamedevforum.repository.CategoryRepository;
 import com.mrumstajn.gamedevforum.service.command.CategoryCommandService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CategoryCommandServiceImpl implements CategoryCommandService {
     private final CategoryRepository categoryRepository;

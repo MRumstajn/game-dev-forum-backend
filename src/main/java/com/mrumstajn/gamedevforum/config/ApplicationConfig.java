@@ -11,11 +11,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Arrays;
 import java.util.List;
 
 @EnableJpaRepositories(basePackages = "com.mrumstajn", repositoryFactoryBeanClass = SearchExecutorJpaRepositoryFactoryBean.class)
+@EnableTransactionManagement
 @Configuration
 public class ApplicationConfig {
 

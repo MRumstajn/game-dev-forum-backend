@@ -5,6 +5,7 @@ import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.repository.ForumThreadRepository;
 import com.mrumstajn.gamedevforum.service.command.ForumThreadCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ForumThreadCommandServiceImpl implements ForumThreadCommandService {
     private final ForumThreadRepository forumThreadRepository;
