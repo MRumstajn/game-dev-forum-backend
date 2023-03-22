@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateForumThreadRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchLatestForumThreadRequest;
 import com.mrumstajn.gamedevforum.dto.response.ForumThreadResponse;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.service.command.ForumThreadCommandService;
@@ -34,6 +35,16 @@ public class ForumThreadController {
     public ResponseEntity<List<ForumThreadResponse>> search(@RequestBody @Valid SearchForumThreadRequest request) {
         return ResponseEntity.ok(forumThreadQueryService.search(request).stream()
                 .map(thread -> modelMapper.map(thread, ForumThreadResponse.class)).toList());
+    }
+
+    @PostMapping("/search/latest-activity")
+    public ResponseEntity<ForumThreadResponse> searchByLatestActivity(@RequestBody @Valid SearchLatestForumThreadRequest request) {
+        ForumThread latest = forumThreadQueryService.getLatest(request);
+        if (latest == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(modelMapper.map(latest, ForumThreadResponse.class));
     }
 
     @PostMapping

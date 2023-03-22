@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "thread")
@@ -22,5 +22,5 @@ public class ForumThread {
     @ManyToOne
     private ForumUser author;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDateTime;
 }

@@ -3,7 +3,7 @@ package com.mrumstajn.gamedevforum.dto.request;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -12,7 +12,7 @@ public class SearchPostRequest {
 
     private Long authorId;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDateTime;
 
     private Long likes;
 

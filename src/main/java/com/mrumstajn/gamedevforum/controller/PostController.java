@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditPostRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchPostRequest;
 import com.mrumstajn.gamedevforum.dto.response.PostResponse;
 import com.mrumstajn.gamedevforum.entity.Post;
@@ -35,6 +36,16 @@ public class PostController {
     public ResponseEntity<List<PostResponse>> search(@RequestBody @Valid SearchPostRequest request){
         return ResponseEntity.ok(postQueryService.search(request).stream()
                 .map(post -> modelMapper.map(post, PostResponse.class)).toList());
+    }
+
+    @PostMapping("/search/latest-activity")
+    public ResponseEntity<PostResponse> searchByLatestActivity(@RequestBody @Valid SearchLatestPostRequest request){
+        Post latest = postQueryService.getLatest(request);
+        if (latest == null){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(modelMapper.map(latest, PostResponse.class));
     }
 
     @PostMapping

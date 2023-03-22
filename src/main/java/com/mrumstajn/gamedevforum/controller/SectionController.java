@@ -1,6 +1,7 @@
 package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateSectionRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchSectionRequest;
 import com.mrumstajn.gamedevforum.dto.response.SectionResponse;
 import com.mrumstajn.gamedevforum.entity.Section;
 import com.mrumstajn.gamedevforum.service.command.SectionCommandService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,5 +37,11 @@ public class SectionController {
 
         return ResponseEntity.created(URI.create("/sections/" + newSection.getId()))
                 .body(modelMapper.map(newSection, SectionResponse.class));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<SectionResponse>> search(@RequestBody @Valid SearchSectionRequest request) {
+        return ResponseEntity.ok(sectionQueryService.search(request).stream()
+                .map(section -> modelMapper.map(section, SectionResponse.class)).toList());
     }
 }

@@ -1,9 +1,10 @@
 package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CategoryStatisticRequest;
-import com.mrumstajn.gamedevforum.dto.response.CategoryStatisticResponse;
-import com.mrumstajn.gamedevforum.dto.response.CategoryResponse;
-import com.mrumstajn.gamedevforum.dto.response.OverallStatisticResponse;
+import com.mrumstajn.gamedevforum.dto.request.SearchLatestForumThreadRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
+import com.mrumstajn.gamedevforum.dto.request.ThreadStatisticRequest;
+import com.mrumstajn.gamedevforum.dto.response.*;
 import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
 import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
@@ -54,10 +55,27 @@ public class StatisticController {
             CategoryStatisticResponse response = new CategoryStatisticResponse();
             response.setCategoryId(categoryId);
             response.setThreadCount(threadQueryService.getTotalCountByCategoryId(categoryId));
+            response.setThreadWithLatestActivity(modelMapper.map(
+                    threadQueryService.getLatest(new SearchLatestForumThreadRequest(categoryId)), ForumThreadResponse.class));
 
             return response;
         }).toList();
 
         return ResponseEntity.ok(categoryStatisticResponses);
+    }
+
+    @PostMapping("/thread-statistics")
+    public ResponseEntity<List<ThreadStatisticResponse>> getStatistic(@RequestBody @Valid ThreadStatisticRequest request) {
+        List<ThreadStatisticResponse> threadStatisticResponses = request.getThreadIds().stream().map(threadId -> {
+            ThreadStatisticResponse response = new ThreadStatisticResponse();
+            response.setThreadId(threadId);
+            response.setPostCount(postQueryService.getTotalCountByThreadId(threadId));
+            response.setLatestPost(modelMapper.map(
+                    postQueryService.getLatest(new SearchLatestPostRequest(threadId)), PostResponse.class));
+
+            return response;
+        }).toList();
+
+        return ResponseEntity.ok(threadStatisticResponses);
     }
 }

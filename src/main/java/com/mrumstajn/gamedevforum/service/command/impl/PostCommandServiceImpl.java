@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -29,7 +29,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     @Override
     public Post create(CreatePostRequest request) {
         Post newPost = modelMapper.map(request, Post.class);
-        newPost.setCreationDate(LocalDate.now());
+        newPost.setCreationDateTime(LocalDateTime.now());
         newPost.setAuthor(forumUserQueryService.getById(request.getAuthorId()));
 
         return postRepository.save(newPost);

@@ -9,4 +9,6 @@ public class CategoryStatisticResponse {
     private Long categoryId;
 
     private Long threadCount;
+
+    private ForumThreadResponse threadWithLatestActivity;
 }

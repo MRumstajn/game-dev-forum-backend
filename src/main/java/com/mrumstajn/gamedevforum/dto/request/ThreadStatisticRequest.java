@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CategoryStatisticRequest {
+public class ThreadStatisticRequest {
     @NotEmpty
-    private List<Long> categoryIds;
+    private List<Long> threadIds;
 }

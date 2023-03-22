@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -26,7 +26,7 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
     public ForumThread create(CreateForumThreadRequest request) {
         ForumThread newThread = modelMapper.map(request, ForumThread.class);
         newThread.setAuthor(forumUserQueryService.getById(request.getAuthorId()));
-        newThread.setCreationDate(LocalDate.now());
+        newThread.setCreationDateTime(LocalDateTime.now());
 
         return forumThreadRepository.save(newThread);
     }

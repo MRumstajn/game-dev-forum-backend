@@ -38,8 +38,8 @@ databaseChangeLog:
                     references: forum_user(id)
 
               - column:
-                  name: creation_date
-                  type: date
+                  name: creation_date_time
+                  type: datetime
                   constraints:
                     nullable: false
 

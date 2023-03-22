@@ -1,5 +1,6 @@
 package com.mrumstajn.gamedevforum.service.query.impl;
 
+import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchPostRequest;
 import com.mrumstajn.gamedevforum.entity.Post;
 import com.mrumstajn.gamedevforum.repository.PostRepository;
@@ -34,5 +35,24 @@ public class PostQueryServiceImpl implements PostQueryService {
     @Override
     public Long getTotalCount() {
         return postRepository.count();
+    }
+
+    @Override
+    public Long getTotalCountByThreadId(Long threadId) {
+        return postRepository.countAllByThreadId(threadId);
+    }
+
+    @Override
+    public Post getLatest(SearchLatestPostRequest request) {
+        long postCount = postRepository.countAllByThreadId(request.getThreadId());
+
+        if (postCount == 0){
+            return null;
+        }
+        if (postCount < 2){
+            return postRepository.findAll().get(0);
+        }
+
+        return postRepository.findLatestByCreationDateAndThreadId(request.getThreadId());
     }
 }

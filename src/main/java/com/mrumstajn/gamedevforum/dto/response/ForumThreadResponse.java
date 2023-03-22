@@ -3,7 +3,7 @@ package com.mrumstajn.gamedevforum.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ public class ForumThreadResponse {
 
     private ForumUserResponse author;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDateTime;
 
     private String title;
 }
