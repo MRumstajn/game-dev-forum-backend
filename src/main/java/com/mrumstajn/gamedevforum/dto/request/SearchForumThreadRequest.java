@@ -14,5 +14,9 @@ public class SearchForumThreadRequest {
 
     private Long authorId;
 
-    private LocalDateTime creationDateTime;
+    private String authorUsername;
+
+    private LocalDateTime creationDateTimeFromIncluding;
+
+    private LocalDateTime creationDateTimeToIncluding;
 }

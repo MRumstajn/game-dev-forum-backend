@@ -2,17 +2,14 @@ package com.mrumstajn.gamedevforum.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.croz.nrich.search.api.model.sort.SortDirection;
-import net.croz.nrich.search.api.model.sort.SortProperty;
-import net.croz.nrich.search.api.request.BaseSortablePageableRequest;
-
-import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class SearchLatestPostRequest extends BaseSortablePageableRequest {
+public class SearchLatestPostRequest {
     private Long threadId;
 
 }

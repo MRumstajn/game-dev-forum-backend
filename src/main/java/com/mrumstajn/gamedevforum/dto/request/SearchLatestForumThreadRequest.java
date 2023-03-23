@@ -3,17 +3,14 @@ package com.mrumstajn.gamedevforum.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.croz.nrich.search.api.model.sort.SortDirection;
-import net.croz.nrich.search.api.model.sort.SortProperty;
-import net.croz.nrich.search.api.request.BaseSortablePageableRequest;
-
-import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class SearchLatestForumThreadRequest extends BaseSortablePageableRequest {
+public class SearchLatestForumThreadRequest {
     @NotNull
     private Long categoryId;
 }
