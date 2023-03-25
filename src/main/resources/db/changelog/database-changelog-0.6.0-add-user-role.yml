@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 25032023248
+      created: 25-03-2023
+      author: Mauricio Rumštajn
+      changes:
+        - addColumn:
+            tableName: forum_user
+            columns:
+              - column:
+                  name: role
+                  type: varchar(30)
+                  defaultValue: ROLE_USER
+                  constraints:
+                    nullable: false

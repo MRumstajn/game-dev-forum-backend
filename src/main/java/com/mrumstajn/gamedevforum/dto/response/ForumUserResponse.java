@@ -1,5 +1,6 @@
 package com.mrumstajn.gamedevforum.dto.response;
 
+import com.mrumstajn.gamedevforum.entity.ForumUserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +14,6 @@ public class ForumUserResponse {
     private String username;
 
     private LocalDate joinDate;
+
+    private ForumUserRole role;
 }

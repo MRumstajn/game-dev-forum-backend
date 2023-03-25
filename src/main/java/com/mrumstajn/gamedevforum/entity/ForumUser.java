@@ -1,9 +1,6 @@
 package com.mrumstajn.gamedevforum.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,4 +19,7 @@ public class ForumUser {
     private String passwordHash;
 
     private LocalDate joinDate;
+
+    @Enumerated(EnumType.STRING)
+    private ForumUserRole role;
 }

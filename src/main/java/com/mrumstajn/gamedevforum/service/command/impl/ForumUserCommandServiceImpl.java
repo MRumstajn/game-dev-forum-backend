@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateForumUserRequest;
 import com.mrumstajn.gamedevforum.entity.ForumUser;
+import com.mrumstajn.gamedevforum.entity.ForumUserRole;
 import com.mrumstajn.gamedevforum.repository.ForumUserRepository;
 import com.mrumstajn.gamedevforum.service.command.ForumUserCommandService;
 import jakarta.transaction.Transactional;
@@ -27,6 +28,7 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
         ForumUser newUser = modelMapper.map(request, ForumUser.class);
         newUser.setJoinDate(LocalDate.now());
         newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        newUser.setRole(ForumUserRole.USER);
 
         return forumUserRepository.save(newUser);
     }

@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.dto.response.LoginResponse;
 import com.mrumstajn.gamedevforum.entity.ForumUser;
 import com.mrumstajn.gamedevforum.exception.LoginException;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
+import com.mrumstajn.gamedevforum.service.query.UserDetailsQueryService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.validation.Valid;
@@ -13,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,15 +32,14 @@ public class AuthController {
 
     private final ForumUserQueryService forumUserQueryService;
 
+    private final UserDetailsQueryService userDetailsQueryService;
+
     private final PasswordEncoder passwordEncoder;
 
     private final ModelMapper modelMapper;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request){
-
-        // TODO add role column or table and apply roles read from db into token
-
         // check if username exists in db
         ForumUser user = forumUserQueryService.getByUsernameExact(request.getUsername());
         if (user == null){
@@ -51,15 +51,15 @@ public class AuthController {
             throw new LoginException("Invalid username or password");
         }
 
+        UserDetails details = userDetailsQueryService.getByUsername(user.getUsername());
+
         // if ok, generate and return token
         String token =
                 Jwts.builder().setId("gamedevforum")
                 .setSubject(user.getUsername())
                         .claim("id", user.getId())
                         .claim("authorities",
-                        AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER").stream()
-                                .map(GrantedAuthority::getAuthority)
-                                .collect(Collectors.toList()))
+                        details.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(JWT_DURATION_IN_SECONDS)))
                 .signWith(SignatureAlgorithm.HS256, System.getenv("jwtsecret").getBytes()).compact();
