@@ -22,6 +22,12 @@ databaseChangeLog:
                     nullable: false
 
               - column:
+                  name: password_hash
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
                   name: join_date
                   type: date
                   constraints:

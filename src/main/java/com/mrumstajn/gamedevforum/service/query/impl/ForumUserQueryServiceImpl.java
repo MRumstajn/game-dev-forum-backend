@@ -18,6 +18,11 @@ public class ForumUserQueryServiceImpl implements ForumUserQueryService {
     }
 
     @Override
+    public ForumUser getByUsernameExact(String username) {
+        return forumUserRepository.findDistinctByUsername(username);
+    }
+
+    @Override
     public Long getTotalCount() {
         return forumUserRepository.count();
     }

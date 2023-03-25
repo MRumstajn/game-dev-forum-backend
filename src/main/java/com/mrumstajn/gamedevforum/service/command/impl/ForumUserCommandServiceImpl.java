@@ -7,6 +7,7 @@ import com.mrumstajn.gamedevforum.service.command.ForumUserCommandService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,10 +20,13 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
 
     private final ModelMapper modelMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public ForumUser create(CreateForumUserRequest request) {
         ForumUser newUser = modelMapper.map(request, ForumUser.class);
         newUser.setJoinDate(LocalDate.now());
+        newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
         return forumUserRepository.save(newUser);
     }

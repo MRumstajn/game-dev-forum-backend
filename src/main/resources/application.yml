@@ -12,3 +12,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   liquibase:
     change-log: db/changelog-master.yml
+  security:
+    user:
+      password: admin
+      name: admin

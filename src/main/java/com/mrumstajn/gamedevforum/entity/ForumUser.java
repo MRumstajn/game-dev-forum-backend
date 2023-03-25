@@ -19,5 +19,7 @@ public class ForumUser {
 
     private String username;
 
+    private String passwordHash;
+
     private LocalDate joinDate;
 }

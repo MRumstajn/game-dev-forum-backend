@@ -6,5 +6,7 @@ public interface ForumUserQueryService {
 
     ForumUser getById(Long id);
 
+    ForumUser getByUsernameExact(String username);
+
     Long getTotalCount();
 }
