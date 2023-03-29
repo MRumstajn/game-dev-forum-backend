@@ -5,6 +5,8 @@ import com.mrumstajn.gamedevforum.dto.request.SearchLatestForumThreadRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
 import com.mrumstajn.gamedevforum.dto.request.ThreadStatisticRequest;
 import com.mrumstajn.gamedevforum.dto.response.*;
+import com.mrumstajn.gamedevforum.entity.ForumThread;
+import com.mrumstajn.gamedevforum.entity.Post;
 import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
 import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
@@ -55,8 +57,13 @@ public class StatisticController {
             CategoryStatisticResponse response = new CategoryStatisticResponse();
             response.setCategoryId(categoryId);
             response.setThreadCount(threadQueryService.getTotalCountByCategoryId(categoryId));
-            response.setThreadWithLatestActivity(modelMapper.map(
-                    threadQueryService.getLatest(new SearchLatestForumThreadRequest(categoryId)), ForumThreadResponse.class));
+
+            ForumThread latestThreadFromCategory = threadQueryService.getLatest(new SearchLatestForumThreadRequest(categoryId));
+            if (latestThreadFromCategory != null) {
+                response.setThreadWithLatestActivity(modelMapper.map(latestThreadFromCategory, ForumThreadResponse.class));
+            } else {
+                response.setThreadWithLatestActivity(null);
+            }
 
             return response;
         }).toList();
@@ -67,11 +74,18 @@ public class StatisticController {
     @PostMapping("/thread-statistics")
     public ResponseEntity<List<ThreadStatisticResponse>> getStatistic(@RequestBody @Valid ThreadStatisticRequest request) {
         List<ThreadStatisticResponse> threadStatisticResponses = request.getThreadIds().stream().map(threadId -> {
+            threadQueryService.getById(threadId); // check if thread exists first
+
             ThreadStatisticResponse response = new ThreadStatisticResponse();
             response.setThreadId(threadId);
             response.setPostCount(postQueryService.getTotalCountByThreadId(threadId));
-            response.setLatestPost(modelMapper.map(
-                    postQueryService.getLatest(new SearchLatestPostRequest(threadId)), PostResponse.class));
+
+            Post latestPost = postQueryService.getLatest(new SearchLatestPostRequest(threadId));
+            if (latestPost != null) {
+                response.setLatestPost(modelMapper.map(latestPost, PostResponse.class));
+            } else {
+                response.setLatestPost(null);
+            }
 
             return response;
         }).toList();
