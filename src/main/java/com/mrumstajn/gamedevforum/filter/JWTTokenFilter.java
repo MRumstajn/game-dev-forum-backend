@@ -7,7 +7,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNullApi;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +29,13 @@ public class JWTTokenFilter extends OncePerRequestFilter {
         try {
             String token = request.getHeader("Authorization");
             if (token != null && token.contains("Bearer")) {
-                token = token.split(" ")[1];
+                token = token.replace("Bearer", "");
+
+                if (token.length() == 0){
+                    SecurityContextHolder.clearContext();
+                    return;
+                }
+
                 Claims claims = Jwts.parser().setSigningKey(jwtSecret.getBytes())
                         .parseClaimsJws(token).getBody();
 
