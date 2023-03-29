@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.entity.Post;
 import com.mrumstajn.gamedevforum.repository.ForumThreadRepository;
+import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
 import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +22,8 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
     private final ForumThreadRepository forumThreadRepository;
 
     private final PostQueryService postQueryService;
+
+    private final CategoryQueryService categoryQueryService;
 
     @Override
     public ForumThread getById(Long id) {
@@ -44,7 +47,7 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
 
     @Override
     public Long getTotalCountByCategoryId(Long categoryId) {
-        getById(categoryId); // check if category exists first
+        categoryQueryService.getById(categoryId); // check if category exists first
 
         return forumThreadRepository.countAllByCategoryId(categoryId);
     }
@@ -57,10 +60,13 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
             return null;
         }
         if (threadCount < 2){
-            ForumThread thread = forumThreadRepository.findAll().get(0);
-            Post latestPost = postQueryService.getLatest(new SearchLatestPostRequest(thread.getId()));
+            List<ForumThread> threads = forumThreadRepository.findAll();
+
+            ForumThread latestThread = threads.get(0);
+
+            Post latestPost = postQueryService.getLatest(new SearchLatestPostRequest(latestThread.getId()));
             if (latestPost != null){
-                return thread;
+                return latestThread;
             }
             return null;
         }
