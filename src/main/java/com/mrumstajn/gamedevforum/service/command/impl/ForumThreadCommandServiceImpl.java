@@ -1,10 +1,13 @@
 package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateForumThreadRequest;
+import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.repository.ForumThreadRepository;
 import com.mrumstajn.gamedevforum.service.command.ForumThreadCommandService;
+import com.mrumstajn.gamedevforum.service.command.PostCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
+import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,8 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
 
     private final ForumUserQueryService forumUserQueryService;
 
+    private final PostCommandService postCommandService;
+
     private final ModelMapper modelMapper;
 
     @Override
@@ -28,6 +33,15 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
         newThread.setAuthor(forumUserQueryService.getById(request.getAuthorId()));
         newThread.setCreationDateTime(LocalDateTime.now());
 
-        return forumThreadRepository.save(newThread);
+        forumThreadRepository.save(newThread);
+
+        CreatePostRequest postRequest = new CreatePostRequest();
+        postRequest.setThreadId(newThread.getId());
+        postRequest.setContent(request.getFirstPostContent());
+        postRequest.setAuthorId(UserUtil.getCurrentUser().getId());
+
+        postCommandService.create(postRequest);
+
+        return newThread;
     }
 }
