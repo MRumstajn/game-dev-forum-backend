@@ -7,6 +7,7 @@ import com.mrumstajn.gamedevforum.entity.ForumUser;
 import com.mrumstajn.gamedevforum.exception.LoginException;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import com.mrumstajn.gamedevforum.service.query.UserDetailsQueryService;
+import com.mrumstajn.gamedevforum.util.UserUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.validation.Valid;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -70,8 +70,6 @@ public class AuthController {
 
     @GetMapping("/current-user")
     public ResponseEntity<ForumUserResponse> currentUser(){
-        ForumUser currentUser = (ForumUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return ResponseEntity.ok(modelMapper.map(currentUser, ForumUserResponse.class));
+        return ResponseEntity.ok(modelMapper.map(UserUtil.getCurrentUser(), ForumUserResponse.class));
     }
 }
