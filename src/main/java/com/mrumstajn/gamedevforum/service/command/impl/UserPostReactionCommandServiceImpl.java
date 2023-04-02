@@ -33,12 +33,11 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         SearchUserPostReactionRequest userPostReactionRequest = new SearchUserPostReactionRequest();
         userPostReactionRequest.setUserId(UserUtil.getCurrentUser().getId());
         userPostReactionRequest.setPostId(request.getPostId());
-        userPostReactionRequest.setPostReactionType(request.getPostReactionType());
 
         UserPostReaction existingReaction = reactionQueryService.search(userPostReactionRequest);
         if (existingReaction != null) {
             // if reaction of same type exists, throw error
-            if (existingReaction.getPostReactionType().equals(request.getPostReactionType())) {
+            if (existingReaction.getPostReactionType().name().equals(request.getPostReactionType().name())) {
                 throw new DuplicateReactionException("The specified reaction has already been applied to the post");
             } else {
                 // if reaction of different type exists, update the type to the specified type

@@ -23,8 +23,9 @@ public class UserPostReactionQueryServiceImpl implements UserPostReactionQuerySe
     public UserPostReaction search(SearchUserPostReactionRequest request) {
         SearchConfiguration<UserPostReaction, UserPostReaction, SearchUserPostReactionRequest> searchConfiguration =
                 SearchConfiguration.<UserPostReaction, UserPostReaction, SearchUserPostReactionRequest>builder()
-                .resolvePropertyMappingUsingPrefix(true)
-                .build();
+                        .resolvePropertyMappingUsingPrefix(true)
+                        .resultClass(UserPostReaction.class)
+                        .build();
 
         List<UserPostReaction> reactions = userPostReactionRepository.findAll(request, searchConfiguration);
         if (reactions.size() == 0){

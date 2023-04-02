@@ -11,12 +11,16 @@ import lombok.Setter;
 public class UserPostReaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long id;
 
+    @Column
     private Long userId;
 
+    @Column
     private Long postId;
 
+    @Column
     @Enumerated(EnumType.STRING)
     private PostReactionType postReactionType;
 }
