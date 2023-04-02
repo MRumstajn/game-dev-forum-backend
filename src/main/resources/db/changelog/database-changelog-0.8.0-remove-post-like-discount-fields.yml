@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010420231520
+      created: 01-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - dropColumn:
+            tableName: post
+            columns:
+              - column:
+                  name: likes
+              - column:
+                  name: dislikes

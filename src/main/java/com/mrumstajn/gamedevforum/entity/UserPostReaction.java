@@ -4,22 +4,19 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
+@Table(name = "user_post_reaction")
 @Getter
 @Setter
-public class Post {
+public class UserPostReaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private ForumUser author;
+    private Long userId;
 
-    private String content;
+    private Long postId;
 
-    private LocalDateTime creationDateTime;
-
-    private Long threadId;
+    @Enumerated(EnumType.STRING)
+    private PostReactionType postReactionType;
 }

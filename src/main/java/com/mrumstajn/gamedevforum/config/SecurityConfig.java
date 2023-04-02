@@ -38,6 +38,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/sections").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/sections/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/sections/search").permitAll()
+                .requestMatchers(HttpMethod.POST, "/post-reactions").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/post-reactions/*").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/post-reactions/*").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/post-reactions/counts").permitAll()
                 .anyRequest().authenticated()
                 .and().build();
     }

@@ -1,6 +1,7 @@
 package com.mrumstajn.gamedevforum.config;
 
 import com.mrumstajn.gamedevforum.dto.response.ErrorResponse;
+import com.mrumstajn.gamedevforum.exception.DuplicateReactionException;
 import com.mrumstajn.gamedevforum.exception.LoginException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -19,5 +20,10 @@ public class ApplicationAdvice {
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<ErrorResponse> handleLoginException(LoginException e){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateReactionException.class)
+    public ResponseEntity<ErrorResponse> handDuplicateReactionException(DuplicateReactionException e){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
     }
 }

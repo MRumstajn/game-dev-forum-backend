@@ -67,14 +67,4 @@ public class PostController {
 
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/{id}/like")
-    public ResponseEntity<PostResponse> like(@PathVariable Long id){
-        return ResponseEntity.ok(modelMapper.map(postCommandService.increaseLikes(id), PostResponse.class));
-    }
-
-    @PostMapping("/{id}/dislike")
-    public ResponseEntity<PostResponse> dislike(@PathVariable Long id){
-        return ResponseEntity.ok(modelMapper.map(postCommandService.increaseDislikes(id), PostResponse.class));
-    }
 }

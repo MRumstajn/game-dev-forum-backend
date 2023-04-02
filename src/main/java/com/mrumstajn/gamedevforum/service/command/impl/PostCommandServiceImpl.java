@@ -49,20 +49,4 @@ public class PostCommandServiceImpl implements PostCommandService {
 
         postRepository.delete(existingPost);
     }
-
-    @Override
-    public Post increaseLikes(Long id) {
-        Post existingPost = postQueryService.getById(id);
-        existingPost.setLikes(existingPost.getLikes() + 1);
-
-        return postRepository.save(existingPost);
-    }
-
-    @Override
-    public Post increaseDislikes(Long id) {
-        Post existingPost = postQueryService.getById(id);
-        existingPost.setDislikes(existingPost.getDislikes() + 1);
-
-        return postRepository.save(existingPost);
-    }
 }

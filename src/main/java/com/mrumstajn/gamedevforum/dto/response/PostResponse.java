@@ -17,8 +17,4 @@ public class PostResponse {
     private LocalDateTime creationDateTime;
 
     private Long threadId;
-
-    private Long likes;
-
-    private Long dislikes;
 }

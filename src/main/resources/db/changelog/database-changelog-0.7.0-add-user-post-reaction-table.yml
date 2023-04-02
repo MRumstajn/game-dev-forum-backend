@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010420231514
+      created: 01-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: user_post_reaction
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_post_likes_user_id
+                    references: forum_user(id)
+                    nullable: false
+
+              - column:
+                  name: post_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_post_likes_post_id
+                    references: post(id)
+                    nullable: false
+
+              - column:
+                  name: post_reaction_type
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
