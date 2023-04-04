@@ -3,6 +3,7 @@ package com.mrumstajn.gamedevforum.controller;
 import com.mrumstajn.gamedevforum.dto.request.CreateUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchUserPostReactionCountRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.dto.response.PostReactionTypeCountResponse;
 import com.mrumstajn.gamedevforum.dto.response.UserPostReactionResponse;
 import com.mrumstajn.gamedevforum.entity.UserPostReaction;
@@ -31,23 +32,47 @@ public class UserPostReactionController {
     public ResponseEntity<UserPostReactionResponse> create(@RequestBody @Valid CreateUserPostReactionRequest request) {
         UserPostReaction reaction = reactionCommandService.create(request);
 
-        return ResponseEntity.created(URI.create("/post-reactions/" + reaction.getId())).body(modelMapper.map(reaction, UserPostReactionResponse.class));
+        SearchUserPostReactionCountRequest searchUserPostReactionCountRequest = new SearchUserPostReactionCountRequest();
+        searchUserPostReactionCountRequest.setPostIds(List.of(request.getPostId()));
+
+        UserPostReactionResponse response = modelMapper.map(reaction, UserPostReactionResponse.class);
+        response.setReactionTypesCount(reactionQueryService.getReactionCountForAll(searchUserPostReactionCountRequest));
+
+        return ResponseEntity.created(URI.create("/post-reactions/" + reaction.getId())).body(response);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<UserPostReactionResponse>> search(@RequestBody @Valid SearchUserPostReactionRequest request){
+        return ResponseEntity.ok(reactionQueryService.search(request).stream()
+                .map(postReaction -> modelMapper.map(postReaction, UserPostReactionResponse.class)).toList());
     }
 
     @PostMapping("/counts")
-    public ResponseEntity<List<PostReactionTypeCountResponse>> getCountsForAll(@RequestBody @Valid SearchUserPostReactionCountRequest request){
+    public ResponseEntity<List<PostReactionTypeCountResponse>> getCountsForAll(@RequestBody @Valid SearchUserPostReactionCountRequest request) {
         return ResponseEntity.ok(reactionQueryService.getReactionCountForAll(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserPostReactionResponse> edit(@PathVariable Long id, @RequestBody @Valid EditUserPostReactionRequest request){
-        return ResponseEntity.ok(modelMapper.map(reactionCommandService.edit(id, request), UserPostReactionResponse.class));
+    public ResponseEntity<UserPostReactionResponse> edit(@PathVariable Long id, @RequestBody @Valid EditUserPostReactionRequest request) {
+        UserPostReactionResponse response = modelMapper.map(reactionCommandService.edit(id, request), UserPostReactionResponse.class);
+
+        SearchUserPostReactionCountRequest searchUserPostReactionCountRequest = new SearchUserPostReactionCountRequest();
+        searchUserPostReactionCountRequest.setPostIds(List.of(response.getPostId()));
+
+        response.setReactionTypesCount(reactionQueryService.getReactionCountForAll(searchUserPostReactionCountRequest));
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<List<PostReactionTypeCountResponse>> delete(@PathVariable Long id){
+        UserPostReaction userPostReaction = reactionQueryService.getById(id);
+
         reactionCommandService.delete(id);
 
-        return ResponseEntity.noContent().build();
+        SearchUserPostReactionCountRequest searchUserPostReactionCountRequest = new SearchUserPostReactionCountRequest();
+        searchUserPostReactionCountRequest.setPostIds(List.of(userPostReaction.getPostId()));
+
+        return ResponseEntity.ok(reactionQueryService.getReactionCountForAll(searchUserPostReactionCountRequest));
     }
 }

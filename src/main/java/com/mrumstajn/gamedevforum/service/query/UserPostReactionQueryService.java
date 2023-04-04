@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserPostReactionQueryService {
 
-    UserPostReaction search(SearchUserPostReactionRequest request);
+    List<UserPostReaction> search(SearchUserPostReactionRequest request);
 
    List<PostReactionTypeCountResponse> getReactionCountForAll(SearchUserPostReactionCountRequest request);
 

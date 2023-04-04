@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.dto.request.SearchUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.entity.UserPostReaction;
 import com.mrumstajn.gamedevforum.exception.DuplicateReactionException;
 import com.mrumstajn.gamedevforum.repository.UserPostReactionRepository;
+
 import com.mrumstajn.gamedevforum.service.command.UserPostReactionCommandService;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import com.mrumstajn.gamedevforum.service.query.UserPostReactionQueryService;
@@ -13,6 +14,8 @@ import com.mrumstajn.gamedevforum.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,19 +35,22 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         // check if same reaction already exists for the post and the current user
         SearchUserPostReactionRequest userPostReactionRequest = new SearchUserPostReactionRequest();
         userPostReactionRequest.setUserId(UserUtil.getCurrentUser().getId());
-        userPostReactionRequest.setPostId(request.getPostId());
+        userPostReactionRequest.setPostIds(List.of(request.getPostId()));
 
-        UserPostReaction existingReaction = reactionQueryService.search(userPostReactionRequest);
-        if (existingReaction != null) {
-            // if reaction of same type exists, throw error
-            if (existingReaction.getPostReactionType().name().equals(request.getPostReactionType().name())) {
-                throw new DuplicateReactionException("The specified reaction has already been applied to the post");
-            } else {
-                // if reaction of different type exists, update the type to the specified type
-                EditUserPostReactionRequest editUserPostReactionRequest = new EditUserPostReactionRequest();
-                editUserPostReactionRequest.setPostReactionType(request.getPostReactionType());
+        List<UserPostReaction> matches = reactionQueryService.search(userPostReactionRequest);
+        if (matches.size() > 0) {
+            UserPostReaction existingReaction = matches.get(0);
+            if (existingReaction != null) {
+                // if reaction of same type exists, throw error
+                if (existingReaction.getPostReactionType().name().equals(request.getPostReactionType().name())) {
+                    throw new DuplicateReactionException("The specified reaction has already been applied to the post");
+                } else {
+                    // if reaction of different type exists, update the type to the specified type
+                    EditUserPostReactionRequest editUserPostReactionRequest = new EditUserPostReactionRequest();
+                    editUserPostReactionRequest.setPostReactionType(request.getPostReactionType());
 
-                return edit(existingReaction.getId(), editUserPostReactionRequest);
+                    return edit(existingReaction.getId(), editUserPostReactionRequest);
+                }
             }
         }
 
