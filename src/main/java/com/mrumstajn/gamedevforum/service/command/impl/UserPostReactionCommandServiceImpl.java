@@ -5,6 +5,7 @@ import com.mrumstajn.gamedevforum.dto.request.EditUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.entity.UserPostReaction;
 import com.mrumstajn.gamedevforum.exception.DuplicateReactionException;
+import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.UserPostReactionRepository;
 
 import com.mrumstajn.gamedevforum.service.command.UserPostReactionCommandService;
@@ -16,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -63,21 +65,40 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
 
     @Override
     public UserPostReaction edit(Long id, EditUserPostReactionRequest request) {
-        UserPostReaction exitingPostReaction = reactionQueryService.getById(id);
+        UserPostReaction existingPostReaction = reactionQueryService.getById(id);
+
+        if (!isCurrentUserReactionOwner(existingPostReaction)){
+            throw new UnauthorizedActionException("User is not the creator of this reaction");
+        }
 
         // if reaction of same type exists, throw error
-        if (exitingPostReaction.getPostReactionType().equals(request.getPostReactionType())) {
+        if (existingPostReaction.getPostReactionType().equals(request.getPostReactionType())) {
             throw new DuplicateReactionException("The specified reaction has already been applied to the post");
         }
 
         // if reaction of different type exists, update the type to the specified type
-        exitingPostReaction.setPostReactionType(request.getPostReactionType());
+        existingPostReaction.setPostReactionType(request.getPostReactionType());
 
-        return userPostReactionRepository.save(exitingPostReaction);
+        return userPostReactionRepository.save(existingPostReaction);
     }
 
     @Override
     public void delete(Long id) {
-        userPostReactionRepository.delete(reactionQueryService.getById(id));
+        UserPostReaction existingPostReaction = reactionQueryService.getById(id);
+
+        if (!isCurrentUserReactionOwner(existingPostReaction)){
+            throw new UnauthorizedActionException("User is not the creator of this reaction");
+        }
+
+        userPostReactionRepository.delete(existingPostReaction);
+    }
+
+    @Override
+    public void deleteAllByPostId(Long postId) {
+        userPostReactionRepository.deleteAllByPostId(postId);
+    }
+
+    private boolean isCurrentUserReactionOwner(UserPostReaction reaction){
+        return Objects.equals(reaction.getUserId(), UserUtil.getCurrentUser().getId());
     }
 }

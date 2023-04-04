@@ -11,4 +11,6 @@ public interface UserPostReactionCommandService {
     UserPostReaction edit(Long id, EditUserPostReactionRequest request);
 
     void delete(Long id);
+
+    void deleteAllByPostId(Long postId);
 }

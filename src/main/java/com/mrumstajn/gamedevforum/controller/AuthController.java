@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/auth")
 public class AuthController {
 
-    public static final int JWT_DURATION_IN_SECONDS = 100;
+    public static final int JWT_DURATION_IN_SECONDS = 60000;
 
     private final ForumUserQueryService forumUserQueryService;
 

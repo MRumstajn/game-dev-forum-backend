@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserPostReactionRepository extends JpaRepository<UserPostReaction, Long>, SearchExecutor<UserPostReaction> {
     Long countAllByPostReactionTypeAndPostId(PostReactionType postReactionType, Long postId);
+
+    void deleteAllByPostId(Long postId);
 }
