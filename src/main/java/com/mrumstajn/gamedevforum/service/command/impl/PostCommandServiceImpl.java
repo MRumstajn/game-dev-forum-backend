@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditPostRequest;
+import com.mrumstajn.gamedevforum.entity.ForumUserRole;
 import com.mrumstajn.gamedevforum.entity.Post;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.PostRepository;
@@ -45,7 +46,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     public Post edit(Long id, EditPostRequest request) {
         Post existingPost = postQueryService.getById(id);
 
-        if (!isCurrentUserPostOwner(existingPost)){
+        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUserPostOwner(existingPost)){
             throw new UnauthorizedActionException("User is not the creator of this post");
         }
 
@@ -58,7 +59,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     public void delete(Long id) {
         Post existingPost = postQueryService.getById(id);
 
-        if (!isCurrentUserPostOwner(existingPost)){
+        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUserPostOwner(existingPost)){
             throw new UnauthorizedActionException("User is not the creator of this post");
         }
 
