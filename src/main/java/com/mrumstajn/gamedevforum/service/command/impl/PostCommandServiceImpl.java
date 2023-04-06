@@ -8,7 +8,6 @@ import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.PostRepository;
 import com.mrumstajn.gamedevforum.service.command.PostCommandService;
 import com.mrumstajn.gamedevforum.service.command.UserPostReactionCommandService;
-import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.transaction.Transactional;
@@ -29,15 +28,13 @@ public class PostCommandServiceImpl implements PostCommandService {
 
     private final UserPostReactionCommandService userPostReactionCommandService;
 
-    private final ForumUserQueryService forumUserQueryService;
-
     private final ModelMapper modelMapper;
 
     @Override
     public Post create(CreatePostRequest request) {
         Post newPost = modelMapper.map(request, Post.class);
         newPost.setCreationDateTime(LocalDateTime.now());
-        newPost.setAuthor(forumUserQueryService.getById(request.getAuthorId()));
+        newPost.setAuthor(UserUtil.getCurrentUser());
 
         return postRepository.save(newPost);
     }

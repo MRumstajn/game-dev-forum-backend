@@ -6,7 +6,6 @@ import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.repository.ForumThreadRepository;
 import com.mrumstajn.gamedevforum.service.command.ForumThreadCommandService;
 import com.mrumstajn.gamedevforum.service.command.PostCommandService;
-import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,6 @@ import java.time.LocalDateTime;
 public class ForumThreadCommandServiceImpl implements ForumThreadCommandService {
     private final ForumThreadRepository forumThreadRepository;
 
-    private final ForumUserQueryService forumUserQueryService;
-
     private final PostCommandService postCommandService;
 
     private final ModelMapper modelMapper;
@@ -30,7 +27,7 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
     @Override
     public ForumThread create(CreateForumThreadRequest request) {
         ForumThread newThread = modelMapper.map(request, ForumThread.class);
-        newThread.setAuthor(forumUserQueryService.getById(request.getAuthorId()));
+        newThread.setAuthor(UserUtil.getCurrentUser());
         newThread.setCreationDateTime(LocalDateTime.now());
 
         forumThreadRepository.save(newThread);
@@ -38,7 +35,6 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
         CreatePostRequest postRequest = new CreatePostRequest();
         postRequest.setThreadId(newThread.getId());
         postRequest.setContent(request.getFirstPostContent());
-        postRequest.setAuthorId(UserUtil.getCurrentUser().getId());
 
         postCommandService.create(postRequest);
 

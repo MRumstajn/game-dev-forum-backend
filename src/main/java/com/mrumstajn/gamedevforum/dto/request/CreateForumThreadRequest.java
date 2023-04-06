@@ -16,9 +16,6 @@ public class CreateForumThreadRequest {
     private Long categoryId;
 
     @NotNull
-    private Long authorId;
-
-    @NotNull
     @Size(min = 3)
     private String firstPostContent;
 }

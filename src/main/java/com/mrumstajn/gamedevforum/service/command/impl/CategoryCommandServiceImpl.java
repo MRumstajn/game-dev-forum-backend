@@ -26,6 +26,9 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
             throw new UnauthorizedActionException("Only ADMIN users can create categories");
         }
 
-        return categoryRepository.save(modelMapper.map(request, Category.class));
+        Category newCategory = modelMapper.map(request, Category.class);
+        newCategory.setSectionId(request.getSection());
+
+        return categoryRepository.save(newCategory);
     }
 }

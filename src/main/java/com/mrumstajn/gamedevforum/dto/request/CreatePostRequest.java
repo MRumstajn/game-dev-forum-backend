@@ -9,9 +9,6 @@ import lombok.Setter;
 @Setter
 public class CreatePostRequest {
     @NotNull
-    private Long authorId;
-
-    @NotNull
     private Long threadId;
 
     @NotBlank
