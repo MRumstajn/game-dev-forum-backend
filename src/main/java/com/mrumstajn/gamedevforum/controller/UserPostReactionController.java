@@ -33,7 +33,7 @@ public class UserPostReactionController {
         UserPostReaction reaction = reactionCommandService.create(request);
 
         SearchUserPostReactionCountRequest searchUserPostReactionCountRequest = new SearchUserPostReactionCountRequest();
-        searchUserPostReactionCountRequest.setPostIds(List.of(request.getPostId()));
+        searchUserPostReactionCountRequest.setPostIds(List.of(request.getPostIdentifier()));
 
         UserPostReactionResponse response = modelMapper.map(reaction, UserPostReactionResponse.class);
         response.setReactionTypesCount(reactionQueryService.getReactionCountForAll(searchUserPostReactionCountRequest));

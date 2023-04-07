@@ -33,12 +33,12 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
 
     @Override
     public UserPostReaction create(CreateUserPostReactionRequest request) {
-        postQueryService.getById(request.getPostId()); // check if post exists first
+        postQueryService.getById(request.getPostIdentifier()); // check if post exists first
 
         // check if same reaction already exists for the post and the current user
         SearchUserPostReactionRequest userPostReactionRequest = new SearchUserPostReactionRequest();
         userPostReactionRequest.setUserId(UserUtil.getCurrentUser().getId());
-        userPostReactionRequest.setPostIds(List.of(request.getPostId()));
+        userPostReactionRequest.setPostIds(List.of(request.getPostIdentifier()));
 
         List<UserPostReaction> matches = reactionQueryService.search(userPostReactionRequest);
         if (matches.size() > 0) {

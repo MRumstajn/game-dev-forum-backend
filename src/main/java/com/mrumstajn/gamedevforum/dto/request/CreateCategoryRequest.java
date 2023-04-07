@@ -11,7 +11,7 @@ import lombok.Setter;
 public class CreateCategoryRequest {
     @NotNull
     @JsonProperty("sectionId")
-    private Long section;
+    private Long sectionIdentifier;
 
     @NotBlank
     private String title;

@@ -29,11 +29,12 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
         ForumThread newThread = modelMapper.map(request, ForumThread.class);
         newThread.setAuthor(UserUtil.getCurrentUser());
         newThread.setCreationDateTime(LocalDateTime.now());
+        newThread.setCategoryId(request.getCategoryIdentifier());
 
         forumThreadRepository.save(newThread);
 
         CreatePostRequest postRequest = new CreatePostRequest();
-        postRequest.setThreadId(newThread.getId());
+        postRequest.setThreadIdentifier(newThread.getId());
         postRequest.setContent(request.getFirstPostContent());
 
         postCommandService.create(postRequest);

@@ -1,5 +1,6 @@
 package com.mrumstajn.gamedevforum.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,7 +14,8 @@ public class CreateForumThreadRequest {
     private String title;
 
     @NotNull
-    private Long categoryId;
+    @JsonProperty("categoryId")
+    private Long categoryIdentifier;
 
     @NotNull
     @Size(min = 3)

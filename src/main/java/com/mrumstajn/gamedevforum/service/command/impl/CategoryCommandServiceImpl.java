@@ -27,7 +27,7 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
         }
 
         Category newCategory = modelMapper.map(request, Category.class);
-        newCategory.setSectionId(request.getSection());
+        newCategory.setSectionId(request.getSectionIdentifier());
 
         return categoryRepository.save(newCategory);
     }

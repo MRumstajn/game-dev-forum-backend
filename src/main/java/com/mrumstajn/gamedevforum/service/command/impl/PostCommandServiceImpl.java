@@ -35,6 +35,7 @@ public class PostCommandServiceImpl implements PostCommandService {
         Post newPost = modelMapper.map(request, Post.class);
         newPost.setCreationDateTime(LocalDateTime.now());
         newPost.setAuthor(UserUtil.getCurrentUser());
+        newPost.setThreadId(request.getThreadIdentifier());
 
         return postRepository.save(newPost);
     }
