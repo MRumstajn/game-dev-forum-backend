@@ -22,4 +22,6 @@ public class ForumUser {
 
     @Enumerated(EnumType.STRING)
     private ForumUserRole role;
+
+    private String bio;
 }

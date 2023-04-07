@@ -16,4 +16,6 @@ public class ForumUserResponse {
     private LocalDate joinDate;
 
     private ForumUserRole role;
+
+    private String bio;
 }

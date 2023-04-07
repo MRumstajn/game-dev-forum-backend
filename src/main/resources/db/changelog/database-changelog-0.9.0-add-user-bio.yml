@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 070420231234
+      created: 07-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - addColumn:
+            tableName: forum_user
+            columns:
+              - column:
+                  name: bio
+                  type: varchar(100)
+                  constraints:
+                    nullable: true

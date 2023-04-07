@@ -9,4 +9,7 @@ import lombok.Setter;
 public class EditForumUserRequest {
     @Size(min = 3)
     private String username;
+
+    @Size(max = 100)
+    private String bio;
 }

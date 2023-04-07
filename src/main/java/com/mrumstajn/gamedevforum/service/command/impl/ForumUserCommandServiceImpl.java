@@ -50,9 +50,7 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
 
         ForumUser existingUser = forumUserQueryService.getById(id);
 
-        if (request.getUsername() != null){
-            existingUser.setUsername(request.getUsername());
-        }
+        modelMapper.map(request, existingUser);
 
         return forumUserRepository.save(existingUser);
     }
