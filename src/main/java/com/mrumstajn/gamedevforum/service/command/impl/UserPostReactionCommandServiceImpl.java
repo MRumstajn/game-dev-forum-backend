@@ -41,6 +41,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         userPostReactionRequest.setPostIds(List.of(request.getPostIdentifier()));
 
         List<UserPostReaction> matches = reactionQueryService.search(userPostReactionRequest);
+        matches.removeIf(element -> !Objects.equals(element.getPostId(), request.getPostIdentifier()));
         if (matches.size() > 0) {
             UserPostReaction existingReaction = matches.get(0);
             if (existingReaction != null) {
@@ -60,6 +61,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         // if reaction does not exist on post, create it
         UserPostReaction postReaction = modelMapper.map(request, UserPostReaction.class);
         postReaction.setUserId(UserUtil.getCurrentUser().getId());
+        postReaction.setPostId(request.getPostIdentifier());
 
         return userPostReactionRepository.save(postReaction);
     }
