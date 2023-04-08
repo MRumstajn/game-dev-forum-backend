@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 080420231505
+      created: 08-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: notification
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: recipient_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_recipient_user_id
+                    references: forum_user(id)
+
+              - column:
+                  name: title
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: content
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: creation_date
+                  type: date
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_read
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: true

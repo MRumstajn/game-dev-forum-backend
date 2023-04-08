@@ -48,6 +48,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/post-reactions/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/post-reactions/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/post-reactions/counts").permitAll()
+                .requestMatchers(HttpMethod.POST, "/notifications/search").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/notifications/mark-as-read").hasAnyAuthority("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and().build();
     }
