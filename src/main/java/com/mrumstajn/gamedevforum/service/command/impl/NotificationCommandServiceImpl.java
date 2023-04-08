@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,11 +24,18 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
     private final ModelMapper modelMapper;
 
     @Override
-    public Notification create(CreateNotificationRequest request) {
-        Notification notification = modelMapper.map(request, Notification.class);
-        notification.setCreationDate(LocalDate.now());
+    public List<Notification> createAll(List<CreateNotificationRequest> requests) {
+        List<Notification> createdNotifications = new ArrayList<>();
 
-        return notificationRepository.save(notification);
+        requests.forEach(request -> {
+            Notification notification = modelMapper.map(request, Notification.class);
+            notification.setCreationDate(LocalDate.now());
+
+            createdNotifications.add(notification);
+        });
+
+
+        return notificationRepository.saveAll(createdNotifications);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface NotificationCommandService {
 
-    Notification create(CreateNotificationRequest request);
+    List<Notification> createAll(List<CreateNotificationRequest> requests);
 
     List<Notification> markAllAsRead(MarkNotificationsAsReadRequest request);
 }
