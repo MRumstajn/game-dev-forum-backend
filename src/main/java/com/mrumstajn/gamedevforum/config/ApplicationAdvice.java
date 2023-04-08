@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.config;
 
 import com.mrumstajn.gamedevforum.dto.response.ErrorResponse;
-import com.mrumstajn.gamedevforum.exception.DuplicateReactionException;
+import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.LoginException;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,8 +23,8 @@ public class ApplicationAdvice {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(DuplicateReactionException.class)
-    public ResponseEntity<ErrorResponse> handDuplicateReactionException(DuplicateReactionException e){
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handDuplicateReactionException(DuplicateResourceException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
     }
 

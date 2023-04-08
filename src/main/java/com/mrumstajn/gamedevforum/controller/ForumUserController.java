@@ -2,12 +2,17 @@ package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateForumUserRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditForumUserRequest;
+import com.mrumstajn.gamedevforum.dto.response.CheckIsFollowingResponse;
 import com.mrumstajn.gamedevforum.dto.response.EditForumUserResponse;
 import com.mrumstajn.gamedevforum.dto.response.ForumUserResponse;
+import com.mrumstajn.gamedevforum.dto.response.UserFollowerResponse;
 import com.mrumstajn.gamedevforum.entity.ForumUser;
 import com.mrumstajn.gamedevforum.service.command.ForumUserCommandService;
 import com.mrumstajn.gamedevforum.service.command.JWTCommandService;
+import com.mrumstajn.gamedevforum.service.command.UserFollowerCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
+import com.mrumstajn.gamedevforum.service.query.UserFollowerQueryService;
+import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +31,10 @@ public class ForumUserController {
     private final ForumUserCommandService forumUserCommandService;
 
     private final JWTCommandService jwtCommandService;
+
+    private final UserFollowerCommandService userFollowerCommandService;
+
+    private final UserFollowerQueryService userFollowerQueryService;
 
     private final ModelMapper modelMapper;
 
@@ -48,6 +58,34 @@ public class ForumUserController {
         EditForumUserResponse response = new EditForumUserResponse();
         response.setUser(modelMapper.map(forumUserCommandService.edit(id, request), ForumUserResponse.class));
         response.setNewAccessToken(jwtCommandService.generateTokenForUser(existingUser));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/follow")
+    public ResponseEntity<UserFollowerResponse> follow(@PathVariable Long id) {
+        return ResponseEntity.ok(modelMapper.map(userFollowerCommandService.create(id), UserFollowerResponse.class));
+    }
+
+    @PostMapping("/{id}/unfollow")
+    public ResponseEntity<Void> unfollow(@PathVariable Long id) {
+        userFollowerCommandService.delete(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<List<ForumUserResponse>> getFollowers(@PathVariable Long id){
+        return ResponseEntity.ok(userFollowerQueryService.getFollowersByFollowedUserId(id).stream()
+                .map(follower -> modelMapper.map(follower, ForumUserResponse.class)).toList());
+    }
+
+    @GetMapping("/{id}/is-following")
+    public ResponseEntity<CheckIsFollowingResponse> checkIsFollowing(@PathVariable Long id){
+        CheckIsFollowingResponse response = new CheckIsFollowingResponse();
+        response.setUserId(UserUtil.getCurrentUser().getId());
+        response.setTargetUserId(id);
+        response.setIsFollowing(userFollowerQueryService.isUserFollowingUser(id));
 
         return ResponseEntity.ok(response);
     }

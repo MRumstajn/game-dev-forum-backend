@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 070420231805
+      created: 07-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: user_follower
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: follower_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_follower_id
+                    references: forum_user(id)
+
+              - column:
+                  name: followed_user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_followed_user_id
+                    references: forum_user(id)

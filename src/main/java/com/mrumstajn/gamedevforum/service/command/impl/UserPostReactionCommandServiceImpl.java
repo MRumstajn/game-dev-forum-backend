@@ -5,7 +5,7 @@ import com.mrumstajn.gamedevforum.dto.request.EditUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.entity.ForumUserRole;
 import com.mrumstajn.gamedevforum.entity.UserPostReaction;
-import com.mrumstajn.gamedevforum.exception.DuplicateReactionException;
+import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.UserPostReactionRepository;
 
@@ -47,7 +47,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
             if (existingReaction != null) {
                 // if reaction of same type exists, throw error
                 if (existingReaction.getPostReactionType().name().equals(request.getPostReactionType().name())) {
-                    throw new DuplicateReactionException("The specified reaction has already been applied to the post");
+                    throw new DuplicateResourceException("The specified reaction has already been applied to the post");
                 } else {
                     // if reaction of different type exists, update the type to the specified type
                     EditUserPostReactionRequest editUserPostReactionRequest = new EditUserPostReactionRequest();
@@ -76,7 +76,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
 
         // if reaction of same type exists, throw error
         if (existingPostReaction.getPostReactionType().equals(request.getPostReactionType())) {
-            throw new DuplicateReactionException("The specified reaction has already been applied to the post");
+            throw new DuplicateResourceException("The specified reaction has already been applied to the post");
         }
 
         // if reaction of different type exists, update the type to the specified type
