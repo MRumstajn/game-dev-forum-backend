@@ -9,4 +9,6 @@ public interface ForumUserQueryService {
     ForumUser getByUsernameExact(String username);
 
     Long getTotalCount();
+
+    Boolean isUsernameTaken(String username);
 }

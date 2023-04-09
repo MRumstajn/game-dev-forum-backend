@@ -5,6 +5,7 @@ import com.mrumstajn.gamedevforum.dto.request.CreateForumUserRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditForumUserRequest;
 import com.mrumstajn.gamedevforum.entity.ForumUser;
 import com.mrumstajn.gamedevforum.entity.ForumUserRole;
+import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.LoginException;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.ForumUserRepository;
@@ -34,6 +35,10 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
 
     @Override
     public ForumUser create(CreateForumUserRequest request) {
+        if (forumUserQueryService.isUsernameTaken(request.getUsername())){
+            throw new DuplicateResourceException("That username is taken");
+        }
+
         ForumUser newUser = modelMapper.map(request, ForumUser.class);
         newUser.setJoinDate(LocalDate.now());
         newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));

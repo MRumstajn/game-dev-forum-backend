@@ -26,4 +26,9 @@ public class ForumUserQueryServiceImpl implements ForumUserQueryService {
     public Long getTotalCount() {
         return forumUserRepository.count();
     }
+
+    @Override
+    public Boolean isUsernameTaken(String username) {
+        return forumUserRepository.existsByUsername(username);
+    }
 }
