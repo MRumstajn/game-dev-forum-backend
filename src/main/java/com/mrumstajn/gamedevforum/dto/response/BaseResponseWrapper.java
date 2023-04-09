@@ -1,6 +1,5 @@
 package com.mrumstajn.gamedevforum.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,9 +7,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class ErrorResponse {
-    private String error;
+public class BaseResponseWrapper<T> {
+    private T data;
+
+    private String errorMessage;
 
     private ErrorCode errorCode;
+
+    public BaseResponseWrapper(T data){
+        this.data = data;
+    }
 }
