@@ -1,13 +1,14 @@
 package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.MarkNotificationsAsReadRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchNotificationRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchNotificationRequestPageable;
 import com.mrumstajn.gamedevforum.dto.response.NotificationResponse;
 import com.mrumstajn.gamedevforum.service.command.NotificationCommandService;
 import com.mrumstajn.gamedevforum.service.query.NotificationQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,9 @@ public class NotificationController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/search")
-    public ResponseEntity<List<NotificationResponse>> search(@RequestBody @Valid SearchNotificationRequest request){
-        return ResponseEntity.ok(notificationQueryService.search(request).stream()
-                .map(notification -> modelMapper.map(notification, NotificationResponse.class)).toList());
+    public ResponseEntity<Page<NotificationResponse>> search(@RequestBody @Valid SearchNotificationRequestPageable request){
+        return ResponseEntity.ok(notificationQueryService.search(request)
+                .map(notification -> modelMapper.map(notification, NotificationResponse.class)));
     }
 
     @PostMapping("/mark-as-read")

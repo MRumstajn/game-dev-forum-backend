@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateForumThreadRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequestPageable;
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestForumThreadRequest;
 import com.mrumstajn.gamedevforum.dto.response.ForumThreadResponse;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
@@ -10,11 +10,11 @@ import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,9 +32,8 @@ public class ForumThreadController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<ForumThreadResponse>> search(@RequestBody @Valid SearchForumThreadRequest request) {
-        return ResponseEntity.ok(forumThreadQueryService.search(request).stream()
-                .map(thread -> modelMapper.map(thread, ForumThreadResponse.class)).toList());
+    public ResponseEntity<Page<ForumThreadResponse>> search(@RequestBody @Valid SearchForumThreadRequestPageable request) {
+        return ResponseEntity.ok(forumThreadQueryService.search(request).map(thread -> modelMapper.map(thread, ForumThreadResponse.class)));
     }
 
     @PostMapping("/search/latest-activity")

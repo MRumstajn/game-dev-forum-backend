@@ -1,6 +1,6 @@
 package com.mrumstajn.gamedevforum.service.query.impl;
 
-import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequestPageable;
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestForumThreadRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
@@ -12,6 +12,8 @@ import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.croz.nrich.search.api.model.SearchConfiguration;
+import net.croz.nrich.search.api.util.PageableUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,13 +33,13 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
     }
 
     @Override
-    public List<ForumThread> search(SearchForumThreadRequest request) {
-        SearchConfiguration<ForumThread, ForumThread, SearchForumThreadRequest> searchConfiguration = SearchConfiguration.<ForumThread, ForumThread, SearchForumThreadRequest>builder()
+    public Page<ForumThread> search(SearchForumThreadRequestPageable request) {
+        SearchConfiguration<ForumThread, ForumThread, SearchForumThreadRequestPageable> searchConfiguration = SearchConfiguration.<ForumThread, ForumThread, SearchForumThreadRequestPageable>builder()
                 .resolvePropertyMappingUsingPrefix(true)
                 .resultClass(ForumThread.class)
                 .build();
 
-        return forumThreadRepository.findAll(request, searchConfiguration);
+        return forumThreadRepository.findAll(request, searchConfiguration, PageableUtil.convertToPageable(request));
     }
 
     @Override

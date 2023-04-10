@@ -1,16 +1,15 @@
 package com.mrumstajn.gamedevforum.service.query;
 
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchPostRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.entity.Post;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface PostQueryService {
 
     Post getById(Long id);
 
-    List<Post> search(SearchPostRequest request);
+    Page<Post> search(SearchPostRequestPageable request);
 
     Long getTotalCount();
 

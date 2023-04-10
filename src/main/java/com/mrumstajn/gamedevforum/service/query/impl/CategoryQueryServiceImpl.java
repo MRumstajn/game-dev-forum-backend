@@ -1,12 +1,14 @@
 package com.mrumstajn.gamedevforum.service.query.impl;
 
-import com.mrumstajn.gamedevforum.dto.request.SearchCategoriesRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchCategoriesRequestPageable;
 import com.mrumstajn.gamedevforum.entity.Category;
 import com.mrumstajn.gamedevforum.repository.CategoryRepository;
 import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.croz.nrich.search.api.model.SearchConfiguration;
+import net.croz.nrich.search.api.util.PageableUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +25,13 @@ public class CategoryQueryServiceImpl implements CategoryQueryService {
     }
 
     @Override
-    public List<Category> search(SearchCategoriesRequest request) {
-        SearchConfiguration<Category, Category, SearchCategoriesRequest> searchConfiguration = SearchConfiguration.<Category, Category, SearchCategoriesRequest>builder()
+    public Page<Category> search(SearchCategoriesRequestPageable request) {
+        SearchConfiguration<Category, Category, SearchCategoriesRequestPageable> searchConfiguration = SearchConfiguration.<Category, Category, SearchCategoriesRequestPageable>builder()
                 .resolvePropertyMappingUsingPrefix(true)
                 .resultClass(Category.class)
                 .build();
 
-        return categoryRepository.findAll(request, searchConfiguration);
+        return categoryRepository.findAll(request, searchConfiguration, PageableUtil.convertToPageable(request));
     }
 
     @Override

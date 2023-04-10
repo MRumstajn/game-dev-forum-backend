@@ -1,16 +1,15 @@
 package com.mrumstajn.gamedevforum.service.query;
 
-import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequestPageable;
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestForumThreadRequest;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ForumThreadQueryService {
 
     ForumThread getById(Long id);
 
-    List<ForumThread> search(SearchForumThreadRequest request);
+    Page<ForumThread> search(SearchForumThreadRequestPageable request);
 
     Long getTotalCount();
 

@@ -3,7 +3,7 @@ package com.mrumstajn.gamedevforum.controller;
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditPostRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchPostRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.dto.response.PostResponse;
 import com.mrumstajn.gamedevforum.entity.Post;
 import com.mrumstajn.gamedevforum.service.command.PostCommandService;
@@ -11,11 +11,11 @@ import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +33,8 @@ public class PostController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<PostResponse>> search(@RequestBody @Valid SearchPostRequest request){
-        return ResponseEntity.ok(postQueryService.search(request).stream()
-                .map(post -> modelMapper.map(post, PostResponse.class)).toList());
+    public ResponseEntity<Page<PostResponse>> search(@RequestBody @Valid SearchPostRequestPageable request){
+        return ResponseEntity.ok(postQueryService.search(request).map(post -> modelMapper.map(post, PostResponse.class)));
     }
 
     @PostMapping("/search/latest-activity")

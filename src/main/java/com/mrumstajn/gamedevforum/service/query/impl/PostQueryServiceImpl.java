@@ -1,16 +1,16 @@
 package com.mrumstajn.gamedevforum.service.query.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.SearchLatestPostRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchPostRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.entity.Post;
 import com.mrumstajn.gamedevforum.repository.PostRepository;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.croz.nrich.search.api.model.SearchConfiguration;
+import net.croz.nrich.search.api.util.PageableUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +23,13 @@ public class PostQueryServiceImpl implements PostQueryService {
     }
 
     @Override
-    public List<Post> search(SearchPostRequest request) {
-        SearchConfiguration<Post, Post, SearchPostRequest> searchConfiguration = SearchConfiguration.<Post, Post, SearchPostRequest>builder()
+    public Page<Post> search(SearchPostRequestPageable request) {
+        SearchConfiguration<Post, Post, SearchPostRequestPageable> searchConfiguration = SearchConfiguration.<Post, Post, SearchPostRequestPageable>builder()
                 .resolvePropertyMappingUsingPrefix(true)
                 .resultClass(Post.class)
                 .build();
 
-        return postRepository.findAll(request, searchConfiguration);
+        return postRepository.findAll(request, searchConfiguration, PageableUtil.convertToPageable(request));
     }
 
     @Override

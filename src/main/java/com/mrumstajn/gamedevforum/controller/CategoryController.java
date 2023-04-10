@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateCategoryRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchCategoriesRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchCategoriesRequestPageable;
 import com.mrumstajn.gamedevforum.dto.response.CategoryResponse;
 import com.mrumstajn.gamedevforum.entity.Category;
 import com.mrumstajn.gamedevforum.service.command.CategoryCommandService;
@@ -9,11 +9,11 @@ import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,9 +31,9 @@ public class CategoryController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<CategoryResponse>> search(@RequestBody @Valid SearchCategoriesRequest request){
-        return ResponseEntity.ok(categoryQueryService.search(request).stream()
-                .map(category -> modelMapper.map(category, CategoryResponse.class)).toList());
+    public ResponseEntity<Page<CategoryResponse>> search(@RequestBody @Valid SearchCategoriesRequestPageable request){
+        return ResponseEntity.ok(categoryQueryService.search(request)
+                .map(category -> modelMapper.map(category, CategoryResponse.class)));
     }
 
     @PostMapping

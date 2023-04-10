@@ -6,12 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Long>, SearchExecutor<ForumThread> {
-
-    List<ForumThread> findByCategoryId(Long categoryId);
-
     Long countAllByCategoryId(Long categoryId);
 
     @Query("""
