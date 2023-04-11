@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ForumThreadResponse {
     private Long id;
 
-    private Long categoryId;
+    private CategoryResponse category;
 
     private ForumUserResponse author;
 

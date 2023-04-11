@@ -16,5 +16,5 @@ public class PostResponse {
 
     private LocalDateTime creationDateTime;
 
-    private Long threadId;
+    private ForumThreadResponse thread;
 }

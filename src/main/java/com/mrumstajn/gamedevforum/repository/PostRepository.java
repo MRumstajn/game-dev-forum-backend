@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface PostRepository extends JpaRepository<Post, Long>, SearchExecutor<Post> {
 
     @Query("""
-            SELECT p FROM Post p WHERE p.creationDateTime >= (select MAX(p2.creationDateTime) FROM Post p2 WHERE p2.id != p.id) AND p.threadId = :threadId GROUP BY p.id, p.threadId
+            SELECT p FROM Post p WHERE p.creationDateTime >= (select MAX(p2.creationDateTime) FROM Post p2 WHERE p2.id != p.id) AND p.thread.id = :threadId GROUP BY p.id, p.thread.id
             """)
     Post findLatestByCreationDateAndThreadId(@Param("threadId") Long threadId);
 

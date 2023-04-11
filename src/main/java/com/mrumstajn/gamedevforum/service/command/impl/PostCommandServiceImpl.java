@@ -3,10 +3,7 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 import com.mrumstajn.gamedevforum.dto.request.CreateNotificationRequest;
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditPostRequest;
-import com.mrumstajn.gamedevforum.entity.ForumThread;
-import com.mrumstajn.gamedevforum.entity.ForumUser;
-import com.mrumstajn.gamedevforum.entity.ForumUserRole;
-import com.mrumstajn.gamedevforum.entity.Post;
+import com.mrumstajn.gamedevforum.entity.*;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.PostRepository;
 import com.mrumstajn.gamedevforum.service.command.NotificationCommandService;
@@ -46,20 +43,25 @@ public class PostCommandServiceImpl implements PostCommandService {
     @Override
     @Transactional
     public Post create(CreatePostRequest request) {
+        // only allow admins to make posts in news section threads
+        ForumThread targetThread = forumThreadQueryService.getById(request.getThreadIdentifier());
+        if (targetThread.getCategory().getTitle().equalsIgnoreCase("news") &&
+                UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN){
+            throw new UnauthorizedActionException("Only ADMIN users can create posts in this thread");
+        }
+
         ForumUser currentUser = UserUtil.getCurrentUser();
 
         Post newPost = modelMapper.map(request, Post.class);
         newPost.setCreationDateTime(LocalDateTime.now());
         newPost.setAuthor(currentUser);
-        newPost.setThreadId(request.getThreadIdentifier());
+        newPost.setThread(targetThread);
 
         postRepository.save(newPost);
 
         // send notification to user followers about the new post
         List<ForumUser> followers = userFollowerQueryService.getFollowersByFollowedUserId(UserUtil.getCurrentUser().getId());
         notificationCommandService.createAll(followers.stream().map(follower -> {
-            ForumThread targetThread = forumThreadQueryService.getById(newPost.getThreadId());
-
             CreateNotificationRequest notificationRequest = new CreateNotificationRequest();
             notificationRequest.setRecipientId(follower.getId());
             notificationRequest.setTitle("New post");

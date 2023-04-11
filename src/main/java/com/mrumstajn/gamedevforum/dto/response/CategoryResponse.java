@@ -8,7 +8,7 @@ import lombok.Setter;
 public class CategoryResponse {
     private Long id;
 
-    private Long sectionId;
+    private SectionResponse section;
 
     private String title;
 }

@@ -12,7 +12,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long sectionId;
+    @ManyToOne
+    private Section section;
 
     private String title;
 }

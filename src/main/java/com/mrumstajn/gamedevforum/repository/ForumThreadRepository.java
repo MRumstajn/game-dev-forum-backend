@@ -10,7 +10,7 @@ public interface ForumThreadRepository extends JpaRepository<ForumThread, Long>,
     Long countAllByCategoryId(Long categoryId);
 
     @Query("""
-            SELECT t FROM ForumThread t WHERE t.id = (SELECT p.threadId FROM Post p WHERE p.creationDateTime >= (select MAX(p2.creationDateTime) FROM Post p2 WHERE p2.id != p.id) AND t.categoryId = :categoryId GROUP BY p.threadId)
+            SELECT t FROM ForumThread t WHERE t.id = (SELECT p.thread.id FROM Post p WHERE p.creationDateTime >= (select MAX(p2.creationDateTime) FROM Post p2 WHERE p2.id != p.id) AND t.category.id = :categoryId GROUP BY p.thread.id)
             """)
     ForumThread findByCategoryIdAndLatestActivity(@Param("categoryId") Long categoryId);
 }

@@ -15,7 +15,8 @@ public class ForumThread {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long categoryId;
+    @ManyToOne
+    private Category category;
 
     private String title;
 

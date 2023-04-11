@@ -67,10 +67,6 @@ public class PostQueryServiceImpl implements PostQueryService {
         
         List<Post> filteredPosts = matches.filter(match -> !matchedPostsToRemove.contains(match.getId())).toList();
 
-        for (Post match : matches) {
-            System.out.println(match.getId());
-        }
-
         return new PageImpl<>(filteredPosts, matches.getPageable(), matches.getTotalElements());
     }
 

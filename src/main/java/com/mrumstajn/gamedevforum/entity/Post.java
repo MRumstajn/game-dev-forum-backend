@@ -21,5 +21,6 @@ public class Post {
 
     private LocalDateTime creationDateTime;
 
-    private Long threadId;
+    @ManyToOne
+    private ForumThread thread;
 }
