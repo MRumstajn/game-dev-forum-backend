@@ -44,6 +44,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public Post create(CreatePostRequest request) {
         ForumUser currentUser = UserUtil.getCurrentUser();
 
@@ -71,6 +72,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     }
 
     @Override
+    @Transactional
     public Post edit(Long id, EditPostRequest request) {
         Post existingPost = postQueryService.getById(id);
 
@@ -84,6 +86,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Post existingPost = postQueryService.getById(id);
 

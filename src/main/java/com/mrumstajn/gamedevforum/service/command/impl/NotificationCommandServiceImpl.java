@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.entity.Notification;
 import com.mrumstajn.gamedevforum.repository.NotificationRepository;
 import com.mrumstajn.gamedevforum.service.command.NotificationCommandService;
 import com.mrumstajn.gamedevforum.service.query.NotificationQueryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public List<Notification> createAll(List<CreateNotificationRequest> requests) {
         List<Notification> createdNotifications = new ArrayList<>();
 
@@ -39,6 +41,7 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
     }
 
     @Override
+    @Transactional
     public List<Notification> markAllAsRead(MarkNotificationsAsReadRequest request) {
         List<Notification> notifications = notificationQueryService.getAllByIds(request.getNotificationIds());
         notifications.forEach(notification -> notification.setIsRead(true));

@@ -25,6 +25,7 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public ForumThread create(CreateForumThreadRequest request) {
         ForumThread newThread = modelMapper.map(request, ForumThread.class);
         newThread.setAuthor(UserUtil.getCurrentUser());

@@ -13,6 +13,7 @@ import com.mrumstajn.gamedevforum.service.command.UserPostReactionCommandService
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
 import com.mrumstajn.gamedevforum.service.query.UserPostReactionQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public UserPostReaction create(CreateUserPostReactionRequest request) {
         postQueryService.getById(request.getPostIdentifier()); // check if post exists first
 
@@ -67,6 +69,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     }
 
     @Override
+    @Transactional
     public UserPostReaction edit(Long id, EditUserPostReactionRequest request) {
         UserPostReaction existingPostReaction = reactionQueryService.getById(id);
 
@@ -86,6 +89,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         UserPostReaction existingPostReaction = reactionQueryService.getById(id);
 
@@ -97,6 +101,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     }
 
     @Override
+    @Transactional
     public void deleteAllByPostId(Long postId) {
         userPostReactionRepository.deleteAllByPostId(postId);
     }

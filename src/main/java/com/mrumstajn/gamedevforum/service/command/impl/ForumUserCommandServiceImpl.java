@@ -34,6 +34,7 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public ForumUser create(CreateForumUserRequest request) {
         if (forumUserQueryService.isUsernameTaken(request.getUsername())){
             throw new DuplicateResourceException("That username is taken");
@@ -48,6 +49,7 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
     }
 
     @Override
+    @Transactional
     public ForumUser edit(Long id, EditForumUserRequest request) {
         if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUser(id)){
             throw new UnauthorizedActionException("User is not the owner of the specified account");
@@ -61,6 +63,7 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
     }
 
     @Override
+    @Transactional
     public ForumUser changePassword(Long id, ChangeForumUserPasswordRequest request) {
         if (!isCurrentUser(id)){
             throw new UnauthorizedActionException("User is not the owner of the specified account");

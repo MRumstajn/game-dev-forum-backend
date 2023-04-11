@@ -21,6 +21,7 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public Category create(CreateCategoryRequest request) {
         if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN){
             throw new UnauthorizedActionException("Only ADMIN users can create categories");

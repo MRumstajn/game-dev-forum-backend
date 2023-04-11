@@ -9,8 +9,8 @@ import com.mrumstajn.gamedevforum.service.command.UserFollowerCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
 import com.mrumstajn.gamedevforum.service.query.UserFollowerQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -25,6 +25,7 @@ public class UserFollowerCommandServiceImpl implements UserFollowerCommandServic
     private final ForumUserQueryService forumUserQueryService;
 
     @Override
+    @Transactional
     public UserFollower create(Long followedUserId) {
         ForumUser currentUser = UserUtil.getCurrentUser();
 
@@ -46,6 +47,7 @@ public class UserFollowerCommandServiceImpl implements UserFollowerCommandServic
     }
 
     @Override
+    @Transactional
     public void delete(Long followedUserId) {
         // check if user is following user
         UserFollower existingFollow = userFollowerQueryService

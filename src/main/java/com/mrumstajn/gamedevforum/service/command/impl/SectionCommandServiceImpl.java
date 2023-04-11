@@ -22,6 +22,7 @@ public class SectionCommandServiceImpl implements SectionCommandService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public Section create(CreateSectionRequest request) {
         if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN){
             throw new UnauthorizedActionException("Only ADMIN users can create categories");

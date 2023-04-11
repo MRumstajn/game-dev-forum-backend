@@ -22,9 +22,9 @@ public class SearchPostRequestPageable extends BaseSortablePageableRequest {
 
     private LocalDateTime creationDateTimeToIncluding;
 
-    private Long likes;
+    private Long likesFromIncluding;
 
-    private Long dislikes;
+    private Long dislikesFromIncluding;
 
     public SearchPostRequestPageable(){
         setPageSize(10);
