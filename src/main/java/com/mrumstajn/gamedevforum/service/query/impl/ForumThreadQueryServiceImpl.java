@@ -16,8 +16,6 @@ import net.croz.nrich.search.api.util.PageableUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
@@ -62,9 +60,7 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
             return null;
         }
         if (threadCount < 2){
-            List<ForumThread> threads = forumThreadRepository.findAll();
-
-            ForumThread latestThread = threads.get(0);
+            ForumThread latestThread = forumThreadRepository.findFirstByCategoryId(request.getCategoryId());
 
             Post latestPost = postQueryService.getLatest(new SearchLatestPostRequest(latestThread.getId()));
             if (latestPost != null){

@@ -88,7 +88,7 @@ public class PostQueryServiceImpl implements PostQueryService {
             return null;
         }
         if (postCount < 2) {
-            return postRepository.findAll().get(0);
+            return postRepository.findFirstByThreadId(request.getThreadId());
         }
 
         return postRepository.findLatestByCreationDateAndThreadId(request.getThreadId());
