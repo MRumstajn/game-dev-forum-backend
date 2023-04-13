@@ -1,11 +1,11 @@
 package com.mrumstajn.gamedevforum.controller;
 
-import com.mrumstajn.gamedevforum.dto.request.CreateForumThreadRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchForumThreadRequestPageable;
-import com.mrumstajn.gamedevforum.dto.request.SearchLatestForumThreadRequest;
+import com.mrumstajn.gamedevforum.dto.request.*;
 import com.mrumstajn.gamedevforum.dto.response.ForumThreadResponse;
+import com.mrumstajn.gamedevforum.dto.response.ThreadSubscriptionResponse;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.service.command.ForumThreadCommandService;
+import com.mrumstajn.gamedevforum.service.command.ThreadSubscriptionCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,8 @@ public class ForumThreadController {
     private final ForumThreadQueryService forumThreadQueryService;
 
     private final ForumThreadCommandService forumThreadCommandService;
+
+    private final ThreadSubscriptionCommandService threadSubscriptionCommandService;
 
     private final ModelMapper modelMapper;
 
@@ -52,5 +54,18 @@ public class ForumThreadController {
 
         return ResponseEntity.created(URI.create("/threads/" + newThread.getId()))
                 .body(modelMapper.map(newThread, ForumThreadResponse.class));
+    }
+
+    @PostMapping("/{id}/subscribe")
+    public ResponseEntity<ThreadSubscriptionResponse> subscribe(@PathVariable Long id){
+        return ResponseEntity.ok(modelMapper.map(threadSubscriptionCommandService
+                .create(new SubscribeToThreadRequest(id)), ThreadSubscriptionResponse.class));
+    }
+
+    @PostMapping("/{id}/unsubscribe")
+    public ResponseEntity<Void> unsubscribe(@PathVariable Long id){
+        threadSubscriptionCommandService.delete(new UnsubscribeFromThreadRequest(id));
+
+        return ResponseEntity.noContent().build();
     }
 }

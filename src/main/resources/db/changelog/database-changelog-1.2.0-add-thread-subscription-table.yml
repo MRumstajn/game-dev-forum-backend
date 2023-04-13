@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 120420231928
+      created: 12-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: thread_subscription
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: thread_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_subscription_thread_id
+                    references: thread(id)
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_subscription_user_id
+                    references: forum_user(id)

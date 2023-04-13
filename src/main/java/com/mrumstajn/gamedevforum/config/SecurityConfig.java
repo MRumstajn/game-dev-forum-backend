@@ -36,6 +36,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/users/*/is-following").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/users/*/followers").permitAll()
                 .requestMatchers(HttpMethod.GET, "/threads/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/threads/*/subscribe").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/threads/*/unsubscribe").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/threads").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/threads/search").permitAll()
                 .requestMatchers(HttpMethod.POST, "/categories").hasAuthority("ADMIN")

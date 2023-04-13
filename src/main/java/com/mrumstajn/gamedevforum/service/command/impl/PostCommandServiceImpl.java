@@ -3,14 +3,17 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 import com.mrumstajn.gamedevforum.dto.request.CreateNotificationRequest;
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditPostRequest;
+import com.mrumstajn.gamedevforum.dto.request.SubscribeToThreadRequest;
 import com.mrumstajn.gamedevforum.entity.*;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.PostRepository;
 import com.mrumstajn.gamedevforum.service.command.NotificationCommandService;
 import com.mrumstajn.gamedevforum.service.command.PostCommandService;
+import com.mrumstajn.gamedevforum.service.command.ThreadSubscriptionCommandService;
 import com.mrumstajn.gamedevforum.service.command.UserPostReactionCommandService;
 import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import com.mrumstajn.gamedevforum.service.query.PostQueryService;
+import com.mrumstajn.gamedevforum.service.query.ThreadSubscriptionQueryService;
 import com.mrumstajn.gamedevforum.service.query.UserFollowerQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.transaction.Transactional;
@@ -38,6 +41,10 @@ public class PostCommandServiceImpl implements PostCommandService {
 
     private final ForumThreadQueryService forumThreadQueryService;
 
+    private final ThreadSubscriptionQueryService threadSubscriptionQueryService;
+
+    private final ThreadSubscriptionCommandService threadSubscriptionCommandService;
+
     private final ModelMapper modelMapper;
 
     @Override
@@ -60,15 +67,25 @@ public class PostCommandServiceImpl implements PostCommandService {
         postRepository.save(newPost);
 
         // send notification to user followers about the new post
-        List<ForumUser> followers = userFollowerQueryService.getFollowersByFollowedUserId(UserUtil.getCurrentUser().getId());
-        notificationCommandService.createAll(followers.stream().map(follower -> {
-            CreateNotificationRequest notificationRequest = new CreateNotificationRequest();
-            notificationRequest.setRecipientId(follower.getId());
-            notificationRequest.setTitle("New post");
-            notificationRequest.setContent(currentUser.getUsername() + " has made a new post in " + targetThread.getTitle());
+        List<Long> followerIds = userFollowerQueryService.getFollowersByFollowedUserId(currentUser.getId())
+                .stream().map(ForumUser::getId).toList();
 
-            return notificationRequest;
-        }).toList());
+        sendNewPostNotificationTo(followerIds, targetThread.getTitle(), currentUser.getUsername());
+
+        // if user is not subscribed to this thread, subscribe them
+        List<Long> subscriberIds = threadSubscriptionQueryService.getAllByThreadId(request.getThreadIdentifier())
+                .stream().map(threadSubscription -> threadSubscription.getUser().getId()).toList();
+
+        if (!subscriberIds.contains(currentUser.getId())){
+            threadSubscriptionCommandService.create(new SubscribeToThreadRequest(targetThread.getId()));
+        }
+
+        // send notification to thread subscribers (except the author) that are not followers of the post author
+        // this follower check prevents notification from being sent twice.
+        List<Long> filteredSubscriberIds = subscriberIds.stream()
+                .filter(subscriberId -> !followerIds.contains(subscriberId) && !Objects.equals(subscriberId, currentUser.getId())).toList();
+
+        sendNewPostNotificationTo(filteredSubscriberIds, targetThread.getTitle(), UserUtil.getCurrentUser().getUsername());
 
         return newPost;
     }
@@ -102,5 +119,18 @@ public class PostCommandServiceImpl implements PostCommandService {
 
     private boolean isCurrentUserPostOwner(Post post){
         return Objects.equals(UserUtil.getCurrentUser().getId(), post.getAuthor().getId());
+    }
+
+    private void sendNewPostNotificationTo(
+            List<Long> recipientIds, String threadTitle, String followedUserUsername){
+
+        notificationCommandService.createAll(recipientIds.stream().map(id -> {
+            CreateNotificationRequest notificationRequest = new CreateNotificationRequest();
+            notificationRequest.setRecipientId(id);
+            notificationRequest.setTitle("New post");
+            notificationRequest.setContent(followedUserUsername + " has made a new post in " + threadTitle);
+
+            return notificationRequest;
+        }).toList());
     }
 }
