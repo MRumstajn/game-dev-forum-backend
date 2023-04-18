@@ -8,12 +8,17 @@ import net.croz.nrich.search.converter.DefaultStringToEntityPropertyMapConverter
 import net.croz.nrich.search.converter.DefaultStringToTypeConverter;
 import net.croz.nrich.search.factory.SearchRepositoryFactorySupportFactory;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletPath;
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,5 +60,23 @@ public class ApplicationConfig {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
         return modelMapper;
+    }
+
+    @Bean
+    public DispatcherServlet dispatcherServlet() {
+        return new DispatcherServlet();
+    }
+
+    @Bean
+    public ServletRegistrationBean<DispatcherServlet> dispatcherServletRegistration() {
+        ServletRegistrationBean<DispatcherServlet> registration = new DispatcherServletRegistrationBean(
+                dispatcherServlet(), "/api/");
+        registration.setName(DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME);
+        return registration;
+    }
+
+    @Bean
+    public DispatcherServletPath dispatcherServletPath(){
+        return () -> "/api";
     }
 }
