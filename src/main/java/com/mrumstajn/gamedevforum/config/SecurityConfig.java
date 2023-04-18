@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .addFilterAfter(new JWTTokenFilter(forumUserQueryService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                .requestMatchers(HttpMethod.GET, "/auth/current-user").permitAll()
+                .requestMatchers(HttpMethod.GET, "/auth/current-user").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/auth/change-password").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/statistics/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/statistics/*").permitAll()

@@ -7,9 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.NonNullApi;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,38 +25,45 @@ public class JWTTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwtSecret = System.getenv("jwtsecret");
         try {
+            boolean authorized = false;
+
             String token = request.getHeader("Authorization");
             if (token != null && token.contains("Bearer")) {
                 token = token.replace("Bearer", "");
 
-                if (token.length() == 0){
-                    SecurityContextHolder.clearContext();
-                    return;
+                if (token.length() > 0){
+                    Claims claims = Jwts.parser().setSigningKey(jwtSecret.getBytes())
+                            .parseClaimsJws(token).getBody();
+
+                    if (claims.get("authorities") != null) {
+
+                        List<String> roles = (List<String>) claims.get("authorities");
+                        ForumUser user = forumUserQueryService.getByUsernameExact(claims.getSubject());
+                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user,
+                                null, roles
+                                .stream()
+                                .map(SimpleGrantedAuthority::new)
+                                .toList());
+
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                        authorized = true;
+
+                    }
                 }
 
-                Claims claims = Jwts.parser().setSigningKey(jwtSecret.getBytes())
-                        .parseClaimsJws(token).getBody();
+            }
 
-                if (claims.get("authorities") != null) {
-                    List<String> roles = (List<String>) claims.get("authorities");
-                    ForumUser user = forumUserQueryService.getByUsernameExact(claims.getSubject());
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user,
-                            null, roles
-                            .stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .toList());
-
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                } else {
-                    SecurityContextHolder.clearContext();
-                }
-            } else {
+            if (!authorized || SecurityContextHolder.getContext().getAuthentication() == null){
                 SecurityContextHolder.clearContext();
             }
 
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            sendUnauthorizedResponse(response);
         }
+    }
+
+    private void sendUnauthorizedResponse(HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
