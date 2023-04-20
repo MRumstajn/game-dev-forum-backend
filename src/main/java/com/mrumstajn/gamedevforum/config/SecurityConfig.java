@@ -57,6 +57,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/work-offers/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/work-offers/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/work-offers/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/work-offer-ratings/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/work-offer-ratings/average-and-total").permitAll()
+                .requestMatchers(HttpMethod.POST, "/work-offer-ratings").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/work-offer-ratings/*").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/work-offer-ratings/*").hasAnyAuthority("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and().build();
     }
