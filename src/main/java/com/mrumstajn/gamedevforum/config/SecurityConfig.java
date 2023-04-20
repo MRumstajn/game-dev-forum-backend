@@ -52,6 +52,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/post-reactions/counts").permitAll()
                 .requestMatchers(HttpMethod.POST, "/notifications/search").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/notifications/mark-as-read").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/work-offers").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/work-offers/search").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/work-offers/*").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/work-offers/*").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/work-offers/*").permitAll()
                 .anyRequest().authenticated()
                 .and().build();
     }

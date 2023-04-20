@@ -51,7 +51,7 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
     @Override
     @Transactional
     public ForumUser edit(Long id, EditForumUserRequest request) {
-        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUser(id)){
+        if (!UserUtil.isUserAdmin() && !isCurrentUser(id)){
             throw new UnauthorizedActionException("User is not the owner of the specified account");
         }
 
