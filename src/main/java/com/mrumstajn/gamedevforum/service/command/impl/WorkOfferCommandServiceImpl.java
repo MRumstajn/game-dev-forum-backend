@@ -6,6 +6,7 @@ import com.mrumstajn.gamedevforum.entity.WorkOffer;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.WorkOfferRepository;
 import com.mrumstajn.gamedevforum.service.command.WorkOfferCommandService;
+import com.mrumstajn.gamedevforum.service.query.WorkOfferCategoryQueryService;
 import com.mrumstajn.gamedevforum.service.query.WorkOfferQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,15 @@ public class WorkOfferCommandServiceImpl implements WorkOfferCommandService {
 
     private final WorkOfferQueryService workOfferQueryService;
 
+    private final WorkOfferCategoryQueryService workOfferCategoryQueryService;
+
     private final ModelMapper modelMapper;
 
     @Override
     public WorkOffer create(CreateWorkOfferRequest request) {
         WorkOffer workOffer = modelMapper.map(request, WorkOffer.class);
         workOffer.setAuthor(UserUtil.getCurrentUser());
+        workOffer.setWorkOfferCategory(workOfferCategoryQueryService.getById(request.getWorkOfferCategoryId()));
 
         return workOfferRepository.save(workOffer);
     }

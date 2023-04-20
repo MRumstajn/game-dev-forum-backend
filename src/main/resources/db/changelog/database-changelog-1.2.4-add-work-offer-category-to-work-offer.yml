@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 200420231810
+      created: 20-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - addColumn:
+            tableName: work_offer
+            columns:
+              - column:
+                  name: work_offer_category_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_work_offer_category_id
+                    references: work_offer_category(id)

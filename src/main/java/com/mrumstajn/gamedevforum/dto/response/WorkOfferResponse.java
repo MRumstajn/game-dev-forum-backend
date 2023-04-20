@@ -19,4 +19,6 @@ public class WorkOfferResponse {
     private ForumUserResponse author;
 
     private Character currencySymbol;
+
+    private Long workOfferCategoryId;
 }

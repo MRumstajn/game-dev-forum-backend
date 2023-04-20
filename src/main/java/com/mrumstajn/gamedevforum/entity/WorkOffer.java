@@ -24,4 +24,7 @@ public class WorkOffer {
     private BigDecimal pricePerHour;
 
     private Character currencySymbol;
+
+    @ManyToOne
+    private WorkOfferCategory workOfferCategory;
 }

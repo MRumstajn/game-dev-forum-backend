@@ -25,4 +25,7 @@ public class CreateWorkOfferRequest {
 
     @NotNull
     private Character currencySymbol;
+
+    @NotNull
+    private Long workOfferCategoryId;
 }
