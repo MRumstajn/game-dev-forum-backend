@@ -11,4 +11,7 @@ public class CreateWorkOfferCategoryRequest {
     @NotNull
     @Size(min = 3, max = 30)
     private String title;
+
+    @Size(min = 3, max = 100)
+    private String description;
 }

@@ -16,4 +16,6 @@ public class WorkOfferCategory {
     private Long id;
 
     private String title;
+
+    private String description;
 }

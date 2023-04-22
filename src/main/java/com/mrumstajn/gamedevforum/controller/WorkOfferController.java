@@ -26,6 +26,11 @@ public class WorkOfferController {
 
     private final ModelMapper modelMapper;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkOfferResponse> getById(@PathVariable Long id){
+        return ResponseEntity.ok(modelMapper.map(workOfferQueryService.getById(id), WorkOfferResponse.class));
+    }
+
     @PostMapping
     public ResponseEntity<WorkOfferResponse> create(@RequestBody @Valid CreateWorkOfferRequest request){
         WorkOffer newWorkOffer = workOfferCommandService.create(request);

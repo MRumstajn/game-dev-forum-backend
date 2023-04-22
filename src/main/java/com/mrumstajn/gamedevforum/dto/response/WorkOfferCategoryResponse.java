@@ -9,4 +9,6 @@ public class WorkOfferCategoryResponse {
     private Long id;
 
     private String title;
+
+    private String description;
 }
