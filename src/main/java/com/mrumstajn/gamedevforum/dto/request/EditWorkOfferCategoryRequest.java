@@ -9,4 +9,7 @@ import lombok.Setter;
 public class EditWorkOfferCategoryRequest {
     @Size(min = 3, max = 30)
     private String title;
+
+    @Size(min = 3, max = 200)
+    private String description;
 }

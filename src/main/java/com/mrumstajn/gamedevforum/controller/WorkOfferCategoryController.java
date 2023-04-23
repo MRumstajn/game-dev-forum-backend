@@ -2,7 +2,7 @@ package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateWorkOfferCategoryRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditWorkOfferCategoryRequest;
-import com.mrumstajn.gamedevforum.dto.request.SearchWorkOfferCategoryRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchWorkOfferCategoryRequestPageable;
 import com.mrumstajn.gamedevforum.dto.response.WorkOfferCategoryResponse;
 import com.mrumstajn.gamedevforum.entity.WorkOfferCategory;
 import com.mrumstajn.gamedevforum.service.command.WorkOfferCategoryCommandService;
@@ -10,11 +10,11 @@ import com.mrumstajn.gamedevforum.service.query.WorkOfferCategoryQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,9 +47,9 @@ public class WorkOfferCategoryController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<WorkOfferCategoryResponse>> search(@RequestBody @Valid SearchWorkOfferCategoryRequest request){
-        return ResponseEntity.ok(offerCategoryQueryService.search(request).stream()
-                .map(match -> modelMapper.map(match, WorkOfferCategoryResponse.class)).toList());
+    public ResponseEntity<Page<WorkOfferCategoryResponse>> searchPageable(@RequestBody @Valid SearchWorkOfferCategoryRequestPageable request){
+        return ResponseEntity.ok(offerCategoryQueryService.search(request)
+                .map(match -> modelMapper.map(match, WorkOfferCategoryResponse.class)));
     }
 
 

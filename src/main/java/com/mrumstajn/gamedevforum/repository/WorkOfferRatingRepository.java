@@ -18,4 +18,6 @@ public interface WorkOfferRatingRepository extends JpaRepository<WorkOfferRating
     Long countAllByWorkOfferId(Long workOfferId);
 
     Optional<WorkOfferRating> findByUserIdAndWorkOfferId(Long userId, Long workOfferId);
+
+    void deleteAllByWorkOfferId(Long workOfferId);
 }

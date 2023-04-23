@@ -37,7 +37,8 @@ public class WorkOfferCategoryCommandServiceImpl implements WorkOfferCategoryCom
         }
 
         WorkOfferCategory workOfferCategory = workOfferCategoryQueryService.getById(id);
-        workOfferCategory.setTitle(request.getTitle());
+
+        modelMapper.map(request, workOfferCategory);
 
         return workOfferCategoryRepository.save(workOfferCategory);
     }

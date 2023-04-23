@@ -1,13 +1,12 @@
 package com.mrumstajn.gamedevforum.service.query;
 
-import com.mrumstajn.gamedevforum.dto.request.SearchWorkOfferCategoryRequest;
+import com.mrumstajn.gamedevforum.dto.request.SearchWorkOfferCategoryRequestPageable;
 import com.mrumstajn.gamedevforum.entity.WorkOfferCategory;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface WorkOfferCategoryQueryService {
 
-    List<WorkOfferCategory> search(SearchWorkOfferCategoryRequest request);
+    Page<WorkOfferCategory> search(SearchWorkOfferCategoryRequestPageable request);
 
     WorkOfferCategory getById(Long id);
 }

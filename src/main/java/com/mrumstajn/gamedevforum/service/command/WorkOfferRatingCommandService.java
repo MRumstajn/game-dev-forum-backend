@@ -11,4 +11,6 @@ public interface WorkOfferRatingCommandService {
     WorkOfferRating edit(Long id, EditWorkOfferRatingRequest request);
 
     void delete(Long id);
+
+    void deleteAllForWorkOffer(Long workOfferId);
 }

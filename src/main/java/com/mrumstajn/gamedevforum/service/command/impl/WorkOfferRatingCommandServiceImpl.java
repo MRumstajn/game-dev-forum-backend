@@ -11,6 +11,7 @@ import com.mrumstajn.gamedevforum.service.query.WorkOfferRatingQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import io.jsonwebtoken.lang.Objects;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class WorkOfferRatingCommandServiceImpl implements WorkOfferRatingCommand
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public WorkOfferRating create(CreateWorkOfferRatingRequest request) {
         workOfferQueryService.getById(request.getWorkOfferId());
 
@@ -48,6 +50,7 @@ public class WorkOfferRatingCommandServiceImpl implements WorkOfferRatingCommand
     }
 
     @Override
+    @Transactional
     public WorkOfferRating edit(Long id, EditWorkOfferRatingRequest request) {
         WorkOfferRating existingRating = workOfferRatingQueryService.getById(id);
 
@@ -61,6 +64,7 @@ public class WorkOfferRatingCommandServiceImpl implements WorkOfferRatingCommand
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         WorkOfferRating existingRating = workOfferRatingQueryService.getById(id);
 
@@ -69,6 +73,12 @@ public class WorkOfferRatingCommandServiceImpl implements WorkOfferRatingCommand
         }
 
         workOfferRatingRepository.delete(existingRating);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllForWorkOffer(Long workOfferId) {
+        workOfferRatingRepository.deleteAllByWorkOfferId(workOfferId);
     }
 
     private boolean doesUserOwnRating(WorkOfferRating rating){

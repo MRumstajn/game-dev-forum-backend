@@ -16,7 +16,7 @@ public class CreateWorkOfferRequest {
     private String title;
 
     @NotNull
-    @Size(min = 3, max = 30)
+    @Size(min = 3, max = 200)
     private String description;
 
     @NotNull
