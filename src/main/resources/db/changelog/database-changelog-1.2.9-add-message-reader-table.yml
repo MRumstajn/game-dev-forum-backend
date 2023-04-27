@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 260420231705
+      created: 26-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: message_reader
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: reader_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_message_read_status_user_id
+                    references: forum_user(id)
+
+              - column:
+                  name: message_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_message_read_status_message_id
+                    references: message(id)

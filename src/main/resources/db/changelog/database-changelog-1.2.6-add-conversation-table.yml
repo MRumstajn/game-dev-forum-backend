@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 250420231503
+      created: 25-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: conversation
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false

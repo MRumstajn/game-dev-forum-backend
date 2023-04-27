@@ -67,6 +67,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/work-offer-categories/*").hasAnyAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/work-offer-categories/*").hasAnyAuthority("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/work-offer-categories/search").permitAll()
+                .requestMatchers(HttpMethod.POST, "/messages").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/messages").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/messages").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/messages/search").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/messages/search/senders").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/messages/*/mark-as-read").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/conversations/search").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/conversations/*").hasAnyAuthority("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and().build();
     }

@@ -2,7 +2,7 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.mrumstajn.gamedevforum.entity.ForumUser;
 import com.mrumstajn.gamedevforum.entity.UserFollower;
-import com.mrumstajn.gamedevforum.exception.CannotFollowSelfException;
+import com.mrumstajn.gamedevforum.exception.CannotTargetSelfException;
 import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.repository.UserFollowerRepository;
 import com.mrumstajn.gamedevforum.service.command.UserFollowerCommandService;
@@ -35,7 +35,7 @@ public class UserFollowerCommandServiceImpl implements UserFollowerCommandServic
         }
 
         if (Objects.equals(currentUser.getId(), followedUserId)){
-            throw new CannotFollowSelfException("User cannot follow itself");
+            throw new CannotTargetSelfException("User cannot follow itself");
         }
 
         UserFollower follow = new UserFollower();

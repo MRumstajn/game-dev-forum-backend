@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 24042023
+      created: 24-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: message
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: content
+                  type: varchar(300)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: author_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_message_author_id
+                    references: forum_user(id)
+
+              - column:
+                  name: creation_date_time
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: conversation_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_message_conversation_id
+                    references: conversation(id)
