@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 290420232005
+      created: 29-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - addColumn:
+            tableName: message
+            columns:
+              - column:
+                  name: deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: true
