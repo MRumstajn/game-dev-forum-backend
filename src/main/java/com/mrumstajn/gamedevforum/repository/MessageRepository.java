@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface MessageRepository extends JpaRepository<Message, Long>, SearchExecutor<Message> {
     Long countAllByConversationIdAndReadersNotContaining(Long conversationId, ForumUser reader);
 
@@ -15,4 +17,6 @@ public interface MessageRepository extends JpaRepository<Message, Long>, SearchE
                     m.creationDateTime = (SELECT MAX (m2.creationDateTime) FROM Message m2)
             """)
     Message getTopByCreationDateAndConversationId(@Param("conversationId") Long conversationId);
+
+    List<Message> getAllByConversationId(Long conversationId);
 }

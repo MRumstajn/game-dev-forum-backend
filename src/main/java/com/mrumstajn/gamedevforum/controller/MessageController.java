@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateMessageRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditMessageRequest;
+import com.mrumstajn.gamedevforum.dto.request.MarkMessagesAsReadRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchMessagesRequestPageable;
 import com.mrumstajn.gamedevforum.dto.response.MessageResponse;
 import com.mrumstajn.gamedevforum.entity.Message;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -48,9 +50,9 @@ public class MessageController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/mark-as-read")
-    public ResponseEntity<MessageResponse> markAsRead(@PathVariable Long id) {
-        return ResponseEntity.ok(convertMessageToMessageResponse(messageCommandService.markAsRead(id)));
+    @PostMapping("/mark-as-read")
+    public ResponseEntity<List<MessageResponse>> markAsRead(@RequestBody MarkMessagesAsReadRequest request) {
+        return ResponseEntity.ok(messageCommandService.markAllAsRead(request).stream().map(this::convertMessageToMessageResponse).toList());
     }
 
     @PostMapping("/search")
@@ -58,14 +60,14 @@ public class MessageController {
         return ResponseEntity.ok(messageQueryService.searchPageable(requestPageable).map(this::convertMessageToMessageResponse));
     }
 
-    private MessageResponse convertMessageToMessageResponse(Message message){
+    private MessageResponse convertMessageToMessageResponse(Message message) {
         MessageResponse response = modelMapper.map(message, MessageResponse.class);
         response.setIsRead(hasUserReadMessage(message));
 
         return response;
     }
 
-    private boolean hasUserReadMessage(Message message){
+    private boolean hasUserReadMessage(Message message) {
         return message.getReaders().stream().filter(reader -> Objects.equals(reader.getId(),
                 UserUtil.getCurrentUser().getId())).toList().size() > 0;
     }

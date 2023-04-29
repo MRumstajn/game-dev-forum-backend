@@ -5,9 +5,12 @@ import com.mrumstajn.gamedevforum.entity.Message;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface MessageQueryService {
-    Message getById(Long id);
+    List<Message> getAllById(List<Long> ids);
+
+    List<Message> getAllByConversationId(Long id);
 
     Page<Message> searchPageable(SearchMessagesRequestPageable requestPageable);
 

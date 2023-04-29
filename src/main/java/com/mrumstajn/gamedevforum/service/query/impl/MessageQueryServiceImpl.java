@@ -7,7 +7,6 @@ import com.mrumstajn.gamedevforum.repository.MessageRepository;
 import com.mrumstajn.gamedevforum.service.query.ConversationQueryService;
 import com.mrumstajn.gamedevforum.service.query.MessageQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.croz.nrich.search.api.model.SearchConfiguration;
 import net.croz.nrich.search.api.util.PageableUtil;
@@ -15,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -25,10 +25,15 @@ public class MessageQueryServiceImpl implements MessageQueryService {
     private final ConversationQueryService conversationQueryService;
 
     @Override
-    public Message getById(Long id) {
-        return messageRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Message with id " + id + " does not exist"));
+    public List<Message> getAllById(List<Long> ids) {
+        return messageRepository.findAllById(ids);
     }
+
+    @Override
+    public List<Message> getAllByConversationId(Long id) {
+        return messageRepository.getAllByConversationId(id);
+    }
+
 
     @Override
     public Page<Message> searchPageable(SearchMessagesRequestPageable requestPageable) {

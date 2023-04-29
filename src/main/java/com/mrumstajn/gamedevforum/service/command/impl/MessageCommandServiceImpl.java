@@ -1,8 +1,6 @@
 package com.mrumstajn.gamedevforum.service.command.impl;
 
-import com.mrumstajn.gamedevforum.dto.request.CreateMessageRequest;
-import com.mrumstajn.gamedevforum.dto.request.CreateNotificationRequest;
-import com.mrumstajn.gamedevforum.dto.request.EditMessageRequest;
+import com.mrumstajn.gamedevforum.dto.request.*;
 import com.mrumstajn.gamedevforum.entity.Message;
 import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
@@ -60,9 +58,9 @@ public class MessageCommandServiceImpl implements MessageCommandService {
 
     @Override
     public Message edit(Long id, EditMessageRequest request) {
-        Message existingMessage = messageQueryService.getById(id);
+        Message existingMessage = messageQueryService.getAllById(List.of(id)).get(0);
 
-        if (!isUserOwnerOfMessage(existingMessage) && !UserUtil.isUserAdmin()){
+        if (!isUserOwnerOfMessage(existingMessage) && !UserUtil.isUserAdmin()) {
             throw new UnauthorizedActionException("User is not the owner of the specified message");
         }
 
@@ -73,9 +71,9 @@ public class MessageCommandServiceImpl implements MessageCommandService {
 
     @Override
     public void delete(Long id) {
-        Message existingMessage = messageQueryService.getById(id);
+        Message existingMessage = messageQueryService.getAllById(List.of(id)).get(0);
 
-        if (!isUserOwnerOfMessage(existingMessage) && !UserUtil.isUserAdmin()){
+        if (!isUserOwnerOfMessage(existingMessage) && !UserUtil.isUserAdmin()) {
             throw new UnauthorizedActionException("User is not the owner of the specified message");
         }
 
@@ -83,23 +81,31 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     }
 
     @Override
-    public Message markAsRead(Long id) {
-        Message existingMessage = messageQueryService.getById(id);
-
-        if (!conversationQueryService.isUserParticipantInConversation(UserUtil.getCurrentUser().getId(), existingMessage.getConversation().getId())){
-            throw new UnauthorizedActionException("User is not a part of the conversation this message is in");
+    public List<Message> markAllAsRead(MarkMessagesAsReadRequest request) {
+        List<Message> existingMessages = new ArrayList<>();
+        if (request.getConversationId() != null) {
+            existingMessages = messageQueryService.getAllByConversationId(request.getConversationId());
+        } else {
+            messageQueryService.getAllById(request.getMessageIds());
         }
 
-        if (existingMessage.getReaders().contains(UserUtil.getCurrentUser())){
-            throw new DuplicateResourceException("Message is already marked as read");
-        }
 
-        existingMessage.getReaders().add(UserUtil.getCurrentUser());
+        existingMessages.forEach(existingMessage -> {
+            if (!conversationQueryService.isUserParticipantInConversation(UserUtil.getCurrentUser().getId(), existingMessage.getConversation().getId())) {
+                throw new UnauthorizedActionException("User is not a part of the conversation this message is in");
+            }
 
-        return messageRepository.save(existingMessage);
+            if (existingMessage.getReaders().contains(UserUtil.getCurrentUser())) {
+                throw new DuplicateResourceException("Message is already marked as read");
+            }
+
+            existingMessage.getReaders().add(UserUtil.getCurrentUser());
+        });
+
+        return messageRepository.saveAll(existingMessages);
     }
 
-    private boolean isUserOwnerOfMessage(Message message){
+    private boolean isUserOwnerOfMessage(Message message) {
         return Objects.equals(message.getAuthor().getId(), UserUtil.getCurrentUser().getId());
     }
 }
