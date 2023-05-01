@@ -11,4 +11,6 @@ public interface ConversationQueryService {
     Page<Conversation> searchPageableByCurrentUser(SearchConversationRequestPageable requestPageable);
 
     Boolean isUserParticipantInConversation(Long userId, Long conversationId);
+
+    Conversation getByParticipantIds(Long participantAId, Long participantBId);
 }

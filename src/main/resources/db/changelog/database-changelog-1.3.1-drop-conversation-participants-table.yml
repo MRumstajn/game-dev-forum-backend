@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 290420232107
+      created: 29-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - dropTable:
+            tableName: "conversation_participant"

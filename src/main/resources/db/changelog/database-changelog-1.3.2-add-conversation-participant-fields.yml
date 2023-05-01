@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 290420232107
+      created: 29-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - addColumn:
+            tableName: conversation
+            columns:
+              - column:
+                  name: participant_a_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_conversation_participant_a_id
+                    references: forum_user(id)
+
+              - column:
+                  name: participant_b_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_conversation_participant_b_id
+                    references: forum_user(id)

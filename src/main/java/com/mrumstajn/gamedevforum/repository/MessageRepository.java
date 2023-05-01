@@ -14,9 +14,9 @@ public interface MessageRepository extends JpaRepository<Message, Long>, SearchE
 
     @Query("""
                     SELECT m FROM Message m WHERE m.conversation.id = :conversationId AND
-                    m.creationDateTime = (SELECT MAX (m2.creationDateTime) FROM Message m2)
+                    m.creationDateTime = (SELECT MAX (m2.creationDateTime) FROM Message m2 WHERE m2.conversation.id = :conversationId)
             """)
-    Message getTopByCreationDateAndConversationId(@Param("conversationId") Long conversationId);
+    Message getTopByConversationId(@Param("conversationId") Long conversationId);
 
     List<Message> getAllByConversationId(Long conversationId);
 }

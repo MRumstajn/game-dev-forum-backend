@@ -1,17 +1,18 @@
 package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.*;
+import com.mrumstajn.gamedevforum.entity.Conversation;
 import com.mrumstajn.gamedevforum.entity.Message;
 import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.MessageRepository;
+import com.mrumstajn.gamedevforum.service.command.ConversationCommandService;
 import com.mrumstajn.gamedevforum.service.command.MessageCommandService;
 import com.mrumstajn.gamedevforum.service.command.NotificationCommandService;
 import com.mrumstajn.gamedevforum.service.query.ConversationQueryService;
 import com.mrumstajn.gamedevforum.service.query.MessageQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,30 +29,42 @@ public class MessageCommandServiceImpl implements MessageCommandService {
 
     private final ConversationQueryService conversationQueryService;
 
-    private final NotificationCommandService notificationCommandService;
+    private final ConversationCommandService conversationCommandService;
 
-    private final ModelMapper modelMapper;
+    private final NotificationCommandService notificationCommandService;
 
     @Override
     public Message create(CreateMessageRequest request) {
-        Message newMessage = modelMapper.map(request, Message.class);
+        // get or create conversation
+        Conversation conversation;
+
+        conversation = conversationQueryService.getByParticipantIds(UserUtil.getCurrentUser().getId(), request.getRecipientId());
+
+        if (conversation == null) {
+            CreateConversationRequest createConversationRequest = new CreateConversationRequest();
+            createConversationRequest.setParticipantAId(UserUtil.getCurrentUser().getId());
+            createConversationRequest.setParticipantBId(request.getRecipientId());
+
+            conversation = conversationCommandService.create(createConversationRequest);
+        }
+
+        // create message
+        Message newMessage = new Message();
+        newMessage.setContent(request.getContent());
         newMessage.setAuthor(UserUtil.getCurrentUser());
         newMessage.setCreationDateTime(LocalDateTime.now());
-        newMessage.setConversation(conversationQueryService.getById(request.getConversationId()));
+        newMessage.setConversation(conversationQueryService.getById(conversation.getId()));
         newMessage.setReaders(List.of(UserUtil.getCurrentUser()));
 
-        List<CreateNotificationRequest> notificationRequests = new ArrayList<>();
-        conversationQueryService.getById(request.getConversationId()).getParticipants().forEach(participant -> {
-            if (!Objects.equals(participant.getId(), UserUtil.getCurrentUser().getId())) {
-                CreateNotificationRequest notificationRequest = new CreateNotificationRequest();
-                notificationRequest.setRecipientId(participant.getId());
-                notificationRequest.setTitle("New message");
-                notificationRequest.setContent("You received a new message from " + UserUtil.getCurrentUser().getUsername());
-                notificationRequests.add(notificationRequest);
-            }
-        });
+        // create notification for recipient
+        CreateNotificationRequest createNotificationRequest;
+        if (!Objects.equals(conversation.getParticipantA().getId(), UserUtil.getCurrentUser().getId())) {
+            createNotificationRequest = generateMessageNotificationRequest(conversation.getParticipantA().getId());
+        } else {
+            createNotificationRequest = generateMessageNotificationRequest(conversation.getParticipantB().getId());
+        }
 
-        notificationCommandService.createAll(notificationRequests);
+        notificationCommandService.createAll(List.of(createNotificationRequest));
 
         return messageRepository.save(newMessage);
     }
@@ -99,7 +112,9 @@ public class MessageCommandServiceImpl implements MessageCommandService {
                 throw new DuplicateResourceException("Message is already marked as read");
             }
 
-            existingMessage.getReaders().add(UserUtil.getCurrentUser());
+            if (!existingMessage.getReaders().contains(UserUtil.getCurrentUser())) {
+                existingMessage.getReaders().add(UserUtil.getCurrentUser());
+            }
         });
 
         return messageRepository.saveAll(existingMessages);
@@ -107,5 +122,14 @@ public class MessageCommandServiceImpl implements MessageCommandService {
 
     private boolean isUserOwnerOfMessage(Message message) {
         return Objects.equals(message.getAuthor().getId(), UserUtil.getCurrentUser().getId());
+    }
+
+    private CreateNotificationRequest generateMessageNotificationRequest(Long id) {
+        CreateNotificationRequest notificationRequest = new CreateNotificationRequest();
+        notificationRequest.setRecipientId(id);
+        notificationRequest.setTitle("New message");
+        notificationRequest.setContent("You received a new message from " + UserUtil.getCurrentUser().getUsername());
+
+        return notificationRequest;
     }
 }

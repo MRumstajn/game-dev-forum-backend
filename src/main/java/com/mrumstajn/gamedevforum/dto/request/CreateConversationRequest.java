@@ -1,13 +1,10 @@
 package com.mrumstajn.gamedevforum.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateConversationRequest {
     @NotNull
-    @Size(min = 2)
-    private List<Long> participants;
+    private Long participantAId;
+
+    @NotNull
+    private Long participantBId;
 }

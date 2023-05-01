@@ -57,6 +57,12 @@ public class MessageQueryServiceImpl implements MessageQueryService {
 
     @Override
     public LocalDateTime getLatestDateTimeByConversationId(Long conversationId) {
-        return messageRepository.getTopByCreationDateAndConversationId(conversationId).getCreationDateTime();
+
+        Message latestMessage = messageRepository.getTopByConversationId(conversationId);
+        if (latestMessage != null){
+            return latestMessage.getCreationDateTime();
+        }
+
+        return null;
     }
 }

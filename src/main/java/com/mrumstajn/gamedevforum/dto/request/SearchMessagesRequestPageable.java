@@ -27,6 +27,6 @@ public class SearchMessagesRequestPageable extends BaseSortablePageableRequest {
     public SearchMessagesRequestPageable(){
         setPageNumber(0);
         setPageSize(10);
-        setSortPropertyList(List.of(new SortProperty("creationDateTime", SortDirection.DESC)));
+        setSortPropertyList(List.of(new SortProperty("creationDateTime", SortDirection.ASC)));
     }
 }

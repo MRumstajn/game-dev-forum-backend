@@ -13,5 +13,5 @@ public class CreateMessageRequest {
     private String content;
 
     @NotNull
-    private Long conversationId;
+    private Long recipientId;
 }

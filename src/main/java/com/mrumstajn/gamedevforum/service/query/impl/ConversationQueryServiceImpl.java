@@ -2,13 +2,13 @@ package com.mrumstajn.gamedevforum.service.query.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.SearchConversationRequestPageable;
 import com.mrumstajn.gamedevforum.entity.Conversation;
+import com.mrumstajn.gamedevforum.entity.ForumUser;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.ConversationRepository;
 import com.mrumstajn.gamedevforum.service.query.ConversationQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import net.croz.nrich.search.api.model.SearchConfiguration;
 import net.croz.nrich.search.api.util.PageableUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -25,9 +25,8 @@ public class ConversationQueryServiceImpl implements ConversationQueryService {
         Conversation conversation = conversationRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Conversation with id " + id + " does not exist"));
 
-        if (conversation.getParticipants().stream().filter(participant -> Objects.equals(participant.getId(),
-                UserUtil.getCurrentUser().getId())).toList().size() == 0){
-            throw new UnauthorizedActionException("User is not a part of the specified conversation");
+        if (!isUserParticipantInFetchedConversation(conversation, UserUtil.getCurrentUser())){
+            throw new UnauthorizedActionException("User is not participating in this conversation");
         }
 
         return conversation;
@@ -35,17 +34,21 @@ public class ConversationQueryServiceImpl implements ConversationQueryService {
 
     @Override
     public Page<Conversation> searchPageableByCurrentUser(SearchConversationRequestPageable requestPageable) {
-        SearchConfiguration<Conversation, Conversation, SearchConversationRequestPageable> searchConfiguration =
-                SearchConfiguration.<Conversation, Conversation, SearchConversationRequestPageable>builder()
-                        .resolvePropertyMappingUsingPrefix(true)
-                        .resultClass(Conversation.class)
-                        .build();
-
-        return conversationRepository.findAll(requestPageable, searchConfiguration, PageableUtil.convertToPageable(requestPageable));
+        return conversationRepository.findAllByCurrentUser(UserUtil.getCurrentUser().getId(), PageableUtil.convertToPageable(requestPageable));
     }
 
     @Override
     public Boolean isUserParticipantInConversation(Long userId, Long conversationId) {
-        return conversationRepository.existsByParticipantsIdAndId(userId, conversationId);
+        return conversationRepository.existsByAnyParticipant(conversationId, userId);
+    }
+
+    @Override
+    public Conversation getByParticipantIds(Long participantAId, Long participantBId) {
+        return conversationRepository.findFirstByParticipantAIdAndParticipantBId(participantAId, participantBId);
+    }
+
+    private Boolean isUserParticipantInFetchedConversation(Conversation conversation, ForumUser user) {
+        return Objects.equals(conversation.getParticipantA().getId(), user.getId()) ||
+                Objects.equals(conversation.getParticipantB().getId(), user.getId());
     }
 }

@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -14,9 +12,12 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
-    @JoinTable(name = "conversation_participant", joinColumns = @JoinColumn(name = "conversation_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private List<ForumUser> participants;
+    @ManyToOne
+    @JoinColumn(name = "participant_a_id")
+    private ForumUser participantA;
+
+    @ManyToOne
+    @JoinColumn(name = "participant_b_id")
+    private ForumUser participantB;
 
 }
