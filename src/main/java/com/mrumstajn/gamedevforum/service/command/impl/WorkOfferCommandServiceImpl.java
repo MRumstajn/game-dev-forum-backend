@@ -35,7 +35,7 @@ public class WorkOfferCommandServiceImpl implements WorkOfferCommandService {
     public WorkOffer create(CreateWorkOfferRequest request) {
         WorkOffer workOffer = modelMapper.map(request, WorkOffer.class);
         workOffer.setAuthor(UserUtil.getCurrentUser());
-        workOffer.setWorkOfferCategory(workOfferCategoryQueryService.getById(request.getWorkOfferCategoryId()));
+        workOffer.setWorkOfferCategory(workOfferCategoryQueryService.getById(request.getWorkOfferCategoryIdentifier()));
 
         return workOfferRepository.save(workOffer);
     }
