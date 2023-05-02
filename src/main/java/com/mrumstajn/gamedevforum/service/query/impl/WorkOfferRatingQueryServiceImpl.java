@@ -1,11 +1,15 @@
 package com.mrumstajn.gamedevforum.service.query.impl;
 
+import com.mrumstajn.gamedevforum.dto.request.SearchWorkOfferRatingRequest;
 import com.mrumstajn.gamedevforum.entity.WorkOfferRating;
 import com.mrumstajn.gamedevforum.repository.WorkOfferRatingRepository;
 import com.mrumstajn.gamedevforum.service.query.WorkOfferRatingQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import net.croz.nrich.search.api.model.SearchConfiguration;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +38,15 @@ public class WorkOfferRatingQueryServiceImpl implements WorkOfferRatingQueryServ
     public WorkOfferRating getById(Long id) {
         return workOfferRatingRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Work offer rating with id " + id + " does not exist"));
+    }
+
+    @Override
+    public List<WorkOfferRating> search(SearchWorkOfferRatingRequest request) {
+        SearchConfiguration<WorkOfferRating, WorkOfferRating, SearchWorkOfferRatingRequest> searchConfiguration = SearchConfiguration.<WorkOfferRating, WorkOfferRating, SearchWorkOfferRatingRequest>builder()
+                .resolvePropertyMappingUsingPrefix(true)
+                .resultClass(WorkOfferRating.class)
+                .build();
+
+        return workOfferRatingRepository.findAll(request, searchConfiguration);
     }
 }

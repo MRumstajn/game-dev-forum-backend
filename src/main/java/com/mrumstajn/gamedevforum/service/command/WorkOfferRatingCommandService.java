@@ -10,7 +10,7 @@ public interface WorkOfferRatingCommandService {
 
     WorkOfferRating edit(Long id, EditWorkOfferRatingRequest request);
 
-    void delete(Long id);
+    void deleteForWorkOfferAndCurrentUser(Long workOfferId);
 
     void deleteAllForWorkOffer(Long workOfferId);
 }

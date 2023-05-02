@@ -65,8 +65,12 @@ public class WorkOfferRatingCommandServiceImpl implements WorkOfferRatingCommand
 
     @Override
     @Transactional
-    public void delete(Long id) {
-        WorkOfferRating existingRating = workOfferRatingQueryService.getById(id);
+    public void deleteForWorkOfferAndCurrentUser(Long workOfferId) {
+        WorkOfferRating existingRating = workOfferRatingQueryService.getByUserIdAndWorkOfferId(UserUtil.getCurrentUser().getId(), workOfferId);
+
+        if (existingRating == null){
+            throw new EntityNotFoundException("User has not left a rating for the specified work offer");
+        }
 
         if (!doesUserOwnRating(existingRating) && !UserUtil.isUserAdmin()){
             throw new UnauthorizedActionException("User is not the owner of the specified work offer rating");
