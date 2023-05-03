@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.config;
 
 import com.mrumstajn.gamedevforum.dto.response.ErrorCode;
 import com.mrumstajn.gamedevforum.dto.response.ErrorResponse;
+import com.mrumstajn.gamedevforum.exception.CannotTargetSelfException;
 import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.LoginException;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
@@ -26,12 +27,17 @@ public class ApplicationAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponse> handDuplicateReactionException(DuplicateResourceException e){
+    public ResponseEntity<ErrorResponse> handleDuplicateReactionException(DuplicateResourceException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage(), ErrorCode.DUPLICATE_RESOURCE));
     }
 
     @ExceptionHandler(UnauthorizedActionException.class)
-    public ResponseEntity<ErrorResponse> handAUnauthorizedActionException(UnauthorizedActionException e){
+    public ResponseEntity<ErrorResponse> handleUnauthorizedActionException(UnauthorizedActionException e){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage(), ErrorCode.UNAUTHORIZED));
+    }
+
+    @ExceptionHandler(CannotTargetSelfException.class)
+    public ResponseEntity<ErrorResponse> handelCannotTargetSelfException(CannotTargetSelfException e){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage(), ErrorCode.CANNOT_TARGET_SELF));
     }
 }

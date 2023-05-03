@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 190420231445
+      created: 19-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: work_offer
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: author_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_service_author_id
+                    references: forum_user(id)
+
+              - column:
+                  name: price_per_hour
+                  type: decimal
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: currency_symbol
+                  type: varchar(1)
+                  constraints:
+                    nullable: false

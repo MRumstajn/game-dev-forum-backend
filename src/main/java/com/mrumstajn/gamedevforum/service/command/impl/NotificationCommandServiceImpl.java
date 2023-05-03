@@ -5,7 +5,7 @@ import com.mrumstajn.gamedevforum.dto.request.MarkNotificationsAsReadRequest;
 import com.mrumstajn.gamedevforum.entity.Notification;
 import com.mrumstajn.gamedevforum.repository.NotificationRepository;
 import com.mrumstajn.gamedevforum.service.command.NotificationCommandService;
-import com.mrumstajn.gamedevforum.service.query.NotificationQueryService;
+import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,8 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationCommandServiceImpl implements NotificationCommandService {
     private final NotificationRepository notificationRepository;
-
-    private final NotificationQueryService notificationQueryService;
 
     private final ModelMapper modelMapper;
 
@@ -42,10 +40,11 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
 
     @Override
     @Transactional
-    public List<Notification> markAllAsRead(MarkNotificationsAsReadRequest request) {
-        List<Notification> notifications = notificationQueryService.getAllByIds(request.getNotificationIds());
-        notifications.forEach(notification -> notification.setIsRead(true));
-
-        return notificationRepository.saveAll(notifications);
+    public void markAllAsRead(MarkNotificationsAsReadRequest request) {
+        if (request.getMarkAllAsRead() != null && request.getMarkAllAsRead()){
+            notificationRepository.markAllAsReadById(UserUtil.getCurrentUser().getId(), List.of(), true);
+        } else {
+            notificationRepository.markAllAsReadById(UserUtil.getCurrentUser().getId(), request.getNotificationIds(), false);
+        }
     }
 }

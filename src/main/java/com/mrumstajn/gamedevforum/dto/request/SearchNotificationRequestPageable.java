@@ -18,6 +18,6 @@ public class SearchNotificationRequestPageable extends BaseSortablePageableReque
     public SearchNotificationRequestPageable(){
         setPageNumber(0);
         setPageSize(10);
-        setSortPropertyList(List.of(new SortProperty("creationDate", SortDirection.ASC)));
+        setSortPropertyList(List.of(new SortProperty("creationDate", SortDirection.DESC)));
     }
 }

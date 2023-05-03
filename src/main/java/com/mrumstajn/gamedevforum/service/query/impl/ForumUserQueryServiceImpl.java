@@ -7,6 +7,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ForumUserQueryServiceImpl implements ForumUserQueryService {
@@ -15,6 +17,11 @@ public class ForumUserQueryServiceImpl implements ForumUserQueryService {
     @Override
     public ForumUser getById(Long id) {
         return forumUserRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
+    }
+
+    @Override
+    public List<ForumUser> getAllById(List<Long> ids) {
+        return forumUserRepository.findAllById(ids);
     }
 
     @Override

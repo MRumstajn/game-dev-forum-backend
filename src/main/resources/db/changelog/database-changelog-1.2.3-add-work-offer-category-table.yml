@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 200420231809
+      created: 20-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: work_offer_category
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: varchar(30)
+                  constraints:
+                    nullable: false

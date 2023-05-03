@@ -95,7 +95,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     public Post edit(Long id, EditPostRequest request) {
         Post existingPost = postQueryService.getById(id);
 
-        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUserPostOwner(existingPost)){
+        if (!UserUtil.isUserAdmin() && !isCurrentUserPostOwner(existingPost)){
             throw new UnauthorizedActionException("User is not the creator of this post");
         }
 
@@ -109,7 +109,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     public void delete(Long id) {
         Post existingPost = postQueryService.getById(id);
 
-        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUserPostOwner(existingPost)){
+        if (!UserUtil.isUserAdmin() && !isCurrentUserPostOwner(existingPost)){
             throw new UnauthorizedActionException("User is not the creator of this post");
         }
 

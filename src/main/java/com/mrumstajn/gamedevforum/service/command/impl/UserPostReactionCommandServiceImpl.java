@@ -3,7 +3,6 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 import com.mrumstajn.gamedevforum.dto.request.CreateUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.dto.request.EditUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchUserPostReactionRequest;
-import com.mrumstajn.gamedevforum.entity.ForumUserRole;
 import com.mrumstajn.gamedevforum.entity.UserPostReaction;
 import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
@@ -73,7 +72,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     public UserPostReaction edit(Long id, EditUserPostReactionRequest request) {
         UserPostReaction existingPostReaction = reactionQueryService.getById(id);
 
-        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUserReactionOwner(existingPostReaction)){
+        if (!UserUtil.isUserAdmin() && !isCurrentUserReactionOwner(existingPostReaction)){
             throw new UnauthorizedActionException("User is not the creator of this reaction");
         }
 
@@ -93,7 +92,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     public void delete(Long id) {
         UserPostReaction existingPostReaction = reactionQueryService.getById(id);
 
-        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN && !isCurrentUserReactionOwner(existingPostReaction)){
+        if (!UserUtil.isUserAdmin() && !isCurrentUserReactionOwner(existingPostReaction)){
             throw new UnauthorizedActionException("User is not the creator of this reaction");
         }
 

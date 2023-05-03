@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 190420231530
+      created: 19-04-2023
+      author: Mauricio Rumštajn
+      changes:
+        - createTable:
+            tableName: work_offer_rating
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: work_offer_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_rating_work_offer_id
+                    references: work_offer(id)
+
+              - column:
+                  name: rating
+                  type: integer
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_rating_user_id
+                    references: forum_user(id)

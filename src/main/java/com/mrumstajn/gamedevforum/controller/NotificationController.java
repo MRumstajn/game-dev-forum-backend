@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.MarkNotificationsAsReadRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchNotificationRequestPageable;
+import com.mrumstajn.gamedevforum.dto.response.UnreadNotificationCountResponse;
 import com.mrumstajn.gamedevforum.dto.response.NotificationResponse;
 import com.mrumstajn.gamedevforum.service.command.NotificationCommandService;
 import com.mrumstajn.gamedevforum.service.query.NotificationQueryService;
@@ -11,8 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +23,14 @@ public class NotificationController {
 
     private final ModelMapper modelMapper;
 
+    @GetMapping("/unread-count")
+    public ResponseEntity<UnreadNotificationCountResponse> getCountInfo(){
+        UnreadNotificationCountResponse response = new UnreadNotificationCountResponse();
+        response.setUnreadNotifications(notificationQueryService.countUnreadForCurrentUser());
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/search")
     public ResponseEntity<Page<NotificationResponse>> search(@RequestBody @Valid SearchNotificationRequestPageable request){
         return ResponseEntity.ok(notificationQueryService.search(request)
@@ -31,8 +38,9 @@ public class NotificationController {
     }
 
     @PostMapping("/mark-as-read")
-    public ResponseEntity<List<NotificationResponse>> markAllAsRead(@RequestBody @Valid MarkNotificationsAsReadRequest request) {
-        return ResponseEntity.ok(notificationCommandService.markAllAsRead(request).stream()
-                .map(notification -> modelMapper.map(notification, NotificationResponse.class)).toList());
+    public ResponseEntity<Void> markAllAsRead(@RequestBody @Valid MarkNotificationsAsReadRequest request) {
+        notificationCommandService.markAllAsRead(request);
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,7 +1,6 @@
 package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateSectionRequest;
-import com.mrumstajn.gamedevforum.entity.ForumUserRole;
 import com.mrumstajn.gamedevforum.entity.Section;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.repository.SectionRepository;
@@ -24,7 +23,7 @@ public class SectionCommandServiceImpl implements SectionCommandService {
     @Override
     @Transactional
     public Section create(CreateSectionRequest request) {
-        if (UserUtil.getCurrentUser().getRole() != ForumUserRole.ADMIN){
+        if (!UserUtil.isUserAdmin()){
             throw new UnauthorizedActionException("Only ADMIN users can create categories");
         }
 
