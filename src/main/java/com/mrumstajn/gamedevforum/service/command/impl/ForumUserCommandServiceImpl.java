@@ -80,6 +80,14 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
         return forumUserRepository.save(existingUser);
     }
 
+    @Override
+    public ForumUser grantRole(Long id, ForumUserRole role) {
+        ForumUser user = forumUserQueryService.getById(id);
+        user.setRole(role);
+
+        return forumUserRepository.save(user);
+    }
+
     private boolean isCurrentUser(Long id){
         return Objects.equals(UserUtil.getCurrentUser().getId(), id);
     }
