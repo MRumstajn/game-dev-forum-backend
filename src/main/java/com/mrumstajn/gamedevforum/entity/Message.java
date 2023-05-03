@@ -37,7 +37,7 @@ public class Message {
             inverseJoinColumns = @JoinColumn(name = "reader_id"))
     private List<ForumUser> readers;
 
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @JsonProperty("content")
     public String getContent() {

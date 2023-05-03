@@ -11,4 +11,6 @@ public interface PostCommandService {
     Post edit(Long id, EditPostRequest request);
 
     void delete(Long id);
+
+    void deleteAllByThreadId(Long threadId);
 }

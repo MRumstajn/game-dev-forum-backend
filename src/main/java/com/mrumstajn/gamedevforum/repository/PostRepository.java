@@ -17,4 +17,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, SearchExecuto
     Long countAllByThreadId(Long threadId);
 
     Post findFirstByThreadId(Long threadId);
+
+    void deleteAllByThreadId(Long threadId);
 }

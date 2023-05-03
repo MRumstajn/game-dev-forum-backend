@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 030520231851
+      created: 03-05-2023
+      author: Mauricio Rumštajn
+      changes:
+        - addColumn:
+            tableName: post
+            columns:
+              - column:
+                  name: deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: true

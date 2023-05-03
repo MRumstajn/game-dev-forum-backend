@@ -17,4 +17,6 @@ public class ForumThreadResponse {
     private LocalDateTime creationDateTime;
 
     private String title;
+
+    private Boolean deleted;
 }

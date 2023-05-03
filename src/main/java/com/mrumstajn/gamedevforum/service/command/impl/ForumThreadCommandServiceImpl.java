@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.service.command.impl;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateForumThreadRequest;
 import com.mrumstajn.gamedevforum.dto.request.CreatePostRequest;
+import com.mrumstajn.gamedevforum.dto.request.EditForumThreadRequest;
 import com.mrumstajn.gamedevforum.entity.Category;
 import com.mrumstajn.gamedevforum.entity.ForumThread;
 import com.mrumstajn.gamedevforum.entity.ForumUserRole;
@@ -10,6 +11,7 @@ import com.mrumstajn.gamedevforum.repository.ForumThreadRepository;
 import com.mrumstajn.gamedevforum.service.command.ForumThreadCommandService;
 import com.mrumstajn.gamedevforum.service.command.PostCommandService;
 import com.mrumstajn.gamedevforum.service.query.CategoryQueryService;
+import com.mrumstajn.gamedevforum.service.query.ForumThreadQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ForumThreadCommandServiceImpl implements ForumThreadCommandService {
     private final ForumThreadRepository forumThreadRepository;
+
+    private final ForumThreadQueryService forumThreadQueryService;
 
     private final PostCommandService postCommandService;
 
@@ -54,5 +58,36 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
         postCommandService.create(postRequest);
 
         return newThread;
+    }
+
+    @Override
+    @Transactional
+    public ForumThread edit(Long id, EditForumThreadRequest request) {
+        ForumThread existingThread = forumThreadQueryService.getById(id);
+
+        if (!isUserOwnerOfThread(existingThread) && !UserUtil.isUserAdmin()){
+            throw new UnauthorizedActionException("User is not the owner of the specified thread");
+        }
+
+        existingThread.setTitle(request.getTitle());
+
+        return forumThreadRepository.save(existingThread);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        ForumThread existingThread = forumThreadQueryService.getById(id);
+
+        if (!isUserOwnerOfThread(existingThread) && !UserUtil.isUserAdmin()){
+            throw new UnauthorizedActionException("User is not the owner of the specified thread");
+        }
+
+        postCommandService.deleteAllByThreadId(existingThread.getId());
+        forumThreadRepository.delete(existingThread);
+    }
+
+    private boolean isUserOwnerOfThread(ForumThread thread){
+        return Objects.equals(UserUtil.getCurrentUser().getId(), thread.getAuthor().getId());
     }
 }

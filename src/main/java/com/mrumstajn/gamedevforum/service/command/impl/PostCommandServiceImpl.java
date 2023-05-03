@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PostCommandServiceImpl implements PostCommandService {
     private final PostRepository postRepository;
@@ -115,6 +114,12 @@ public class PostCommandServiceImpl implements PostCommandService {
 
         userPostReactionCommandService.deleteAllByPostId(existingPost.getId());
         postRepository.delete(existingPost);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllByThreadId(Long threadId) {
+        postRepository.deleteAllByThreadId(threadId);
     }
 
     private boolean isCurrentUserPostOwner(Post post){

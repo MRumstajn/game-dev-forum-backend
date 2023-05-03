@@ -17,4 +17,6 @@ public class PostResponse {
     private LocalDateTime creationDateTime;
 
     private ForumThreadResponse thread;
+
+    private Boolean deleted;
 }

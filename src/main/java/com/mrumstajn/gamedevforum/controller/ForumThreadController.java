@@ -56,6 +56,18 @@ public class ForumThreadController {
                 .body(modelMapper.map(newThread, ForumThreadResponse.class));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ForumThreadResponse> edit(@PathVariable Long id, @RequestBody @Valid EditForumThreadRequest request){
+        return ResponseEntity.ok(modelMapper.map(forumThreadCommandService.edit(id, request), ForumThreadResponse.class));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        forumThreadCommandService.delete(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{id}/subscribe")
     public ResponseEntity<ThreadSubscriptionResponse> subscribe(@PathVariable Long id){
         return ResponseEntity.ok(modelMapper.map(threadSubscriptionCommandService
