@@ -10,5 +10,5 @@ public interface NotificationCommandService {
 
     List<Notification> createAll(List<CreateNotificationRequest> requests);
 
-    List<Notification> markAllAsRead(MarkNotificationsAsReadRequest request);
+    void markAllAsRead(MarkNotificationsAsReadRequest request);
 }

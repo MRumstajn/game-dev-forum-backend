@@ -4,13 +4,12 @@ import com.mrumstajn.gamedevforum.dto.request.SearchNotificationRequestPageable;
 import com.mrumstajn.gamedevforum.entity.Notification;
 import com.mrumstajn.gamedevforum.repository.NotificationRepository;
 import com.mrumstajn.gamedevforum.service.query.NotificationQueryService;
+import com.mrumstajn.gamedevforum.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import net.croz.nrich.search.api.model.SearchConfiguration;
 import net.croz.nrich.search.api.util.PageableUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class NotificationQueryServiceImpl implements NotificationQueryService {
     }
 
     @Override
-    public List<Notification> getAllByIds(List<Long> ids) {
-        return notificationRepository.findAllById(ids);
+    public Long countUnreadForCurrentUser() {
+        return notificationRepository.countAllByRecipientIdAndIsRead(UserUtil.getCurrentUser().getId(), false);
     }
 }
