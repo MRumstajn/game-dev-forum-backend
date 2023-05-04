@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.config;
 
 import com.mrumstajn.gamedevforum.filter.JWTTokenFilter;
-import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
+import com.mrumstajn.gamedevforum.user.service.query.ForumUserQueryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.filter;
 
-import com.mrumstajn.gamedevforum.entity.ForumUser;
-import com.mrumstajn.gamedevforum.service.query.ForumUserQueryService;
+import com.mrumstajn.gamedevforum.user.entity.ForumUser;
+import com.mrumstajn.gamedevforum.user.service.query.ForumUserQueryService;
 import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

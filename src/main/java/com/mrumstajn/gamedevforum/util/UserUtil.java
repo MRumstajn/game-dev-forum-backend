@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.util;
 
-import com.mrumstajn.gamedevforum.entity.ForumUser;
-import com.mrumstajn.gamedevforum.entity.ForumUserRole;
+import com.mrumstajn.gamedevforum.user.entity.ForumUser;
+import com.mrumstajn.gamedevforum.user.entity.ForumUserRole;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserUtil {

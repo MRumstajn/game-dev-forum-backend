@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.config;
 
-import com.mrumstajn.gamedevforum.dto.response.BaseResponseWrapper;
-import com.mrumstajn.gamedevforum.dto.response.ErrorResponse;
+import com.mrumstajn.gamedevforum.common.response.BaseResponseWrapper;
+import com.mrumstajn.gamedevforum.common.response.ErrorResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;

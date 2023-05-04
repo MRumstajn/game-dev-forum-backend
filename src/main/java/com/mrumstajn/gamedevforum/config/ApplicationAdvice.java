@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.config;
 
-import com.mrumstajn.gamedevforum.dto.response.ErrorCode;
-import com.mrumstajn.gamedevforum.dto.response.ErrorResponse;
+import com.mrumstajn.gamedevforum.common.response.ErrorCode;
+import com.mrumstajn.gamedevforum.common.response.ErrorResponse;
 import com.mrumstajn.gamedevforum.exception.CannotTargetSelfException;
 import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
 import com.mrumstajn.gamedevforum.exception.LoginException;
