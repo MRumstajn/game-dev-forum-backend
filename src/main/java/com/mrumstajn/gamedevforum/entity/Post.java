@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Where(clause = "deleted = false")
-@SQLDelete(sql = "UPDATE thread SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE post SET deleted = true WHERE id=?")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

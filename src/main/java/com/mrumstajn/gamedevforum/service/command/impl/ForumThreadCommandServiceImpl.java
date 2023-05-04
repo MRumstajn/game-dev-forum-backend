@@ -83,7 +83,6 @@ public class ForumThreadCommandServiceImpl implements ForumThreadCommandService 
             throw new UnauthorizedActionException("User is not the owner of the specified thread");
         }
 
-        postCommandService.deleteAllByThreadId(existingThread.getId());
         forumThreadRepository.delete(existingThread);
     }
 

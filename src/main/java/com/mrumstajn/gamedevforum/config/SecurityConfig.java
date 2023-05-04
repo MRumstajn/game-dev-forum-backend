@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/threads/search").permitAll()
                 .requestMatchers(HttpMethod.POST, "/categories").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/categories/*").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/categories/*").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/categories/*").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/categories/search").permitAll()
                 .requestMatchers(HttpMethod.POST, "/sections").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/sections/*").permitAll()

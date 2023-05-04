@@ -35,7 +35,7 @@ public class ForumThreadController {
 
     @PostMapping("/search")
     public ResponseEntity<Page<ForumThreadResponse>> search(@RequestBody @Valid SearchForumThreadRequestPageable request) {
-        return ResponseEntity.ok(forumThreadQueryService.search(request).map(thread -> modelMapper.map(thread, ForumThreadResponse.class)));
+        return ResponseEntity.ok(forumThreadQueryService.searchPageable(request).map(thread -> modelMapper.map(thread, ForumThreadResponse.class)));
     }
 
     @PostMapping("/search/latest-activity")

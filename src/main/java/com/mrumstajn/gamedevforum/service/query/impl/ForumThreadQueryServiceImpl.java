@@ -31,7 +31,7 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
     }
 
     @Override
-    public Page<ForumThread> search(SearchForumThreadRequestPageable request) {
+    public Page<ForumThread> searchPageable(SearchForumThreadRequestPageable request) {
         SearchConfiguration<ForumThread, ForumThread, SearchForumThreadRequestPageable> searchConfiguration = SearchConfiguration.<ForumThread, ForumThread, SearchForumThreadRequestPageable>builder()
                 .resolvePropertyMappingUsingPrefix(true)
                 .resultClass(ForumThread.class)

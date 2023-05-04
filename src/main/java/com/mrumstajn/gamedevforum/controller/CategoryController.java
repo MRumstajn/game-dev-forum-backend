@@ -1,6 +1,7 @@
 package com.mrumstajn.gamedevforum.controller;
 
 import com.mrumstajn.gamedevforum.dto.request.CreateCategoryRequest;
+import com.mrumstajn.gamedevforum.dto.request.EditCategoryRequest;
 import com.mrumstajn.gamedevforum.dto.request.SearchCategoriesRequestPageable;
 import com.mrumstajn.gamedevforum.dto.response.CategoryResponse;
 import com.mrumstajn.gamedevforum.entity.Category;
@@ -42,5 +43,17 @@ public class CategoryController {
 
         return ResponseEntity.created(URI.create("/categories/" + newCategory.getId()))
                 .body(modelMapper.map(newCategory, CategoryResponse.class));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponse> edit(@PathVariable Long id, @RequestBody @Valid EditCategoryRequest request){
+        return ResponseEntity.ok(modelMapper.map(categoryCommandService.edit(id, request), CategoryResponse.class));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        categoryCommandService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

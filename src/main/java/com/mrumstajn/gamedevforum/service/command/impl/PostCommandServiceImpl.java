@@ -116,14 +116,12 @@ public class PostCommandServiceImpl implements PostCommandService {
         postRepository.delete(existingPost);
     }
 
-    @Override
-    @Transactional
-    public void deleteAllByThreadId(Long threadId) {
-        postRepository.deleteAllByThreadId(threadId);
-    }
-
     private boolean isCurrentUserPostOwner(Post post){
         return Objects.equals(UserUtil.getCurrentUser().getId(), post.getAuthor().getId());
+    }
+
+    private boolean isCurrentUserThreadOwner(ForumThread thread){
+        return Objects.equals(UserUtil.getCurrentUser().getId(), thread.getAuthor().getId());
     }
 
     private void sendNewPostNotificationTo(

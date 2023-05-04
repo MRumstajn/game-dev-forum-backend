@@ -9,7 +9,7 @@ public interface ForumThreadQueryService {
 
     ForumThread getById(Long id);
 
-    Page<ForumThread> search(SearchForumThreadRequestPageable request);
+    Page<ForumThread> searchPageable(SearchForumThreadRequestPageable request);
 
     Long getTotalCount();
 
