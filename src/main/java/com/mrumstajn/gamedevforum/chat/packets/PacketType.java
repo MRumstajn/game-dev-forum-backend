@@ -11,5 +11,13 @@ public enum PacketType {
 
     MESSAGE_RESPONSE,
 
-    SYSTEM_MESSAGE
+    SYSTEM_MESSAGE,
+
+    USER_JOIN,
+
+    USER_LEAVE,
+
+    ONLINE_USERS_REQUEST,
+
+    ONLINE_USERS_RESPONSE,
 }

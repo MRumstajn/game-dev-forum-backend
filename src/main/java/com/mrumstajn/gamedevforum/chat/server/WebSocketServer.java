@@ -16,7 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
-
+import java.util.List;
 
 
 @Slf4j
@@ -46,7 +46,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
         WebSocketClient client = clientMap.get(webSocket.getRemoteSocketAddress());
 
-        broadcast(packetToJSON(new SystemMessagePacket(client.getUser().getUsername() + " has left the chat")));
+        broadcast(packetToJSON(new UserLeavePacket(modelMapper.map(client.getUser(), ForumUserResponse.class))));
 
         disconnectClient(webSocket);
     }
@@ -77,15 +77,24 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
                 ForumUserResponse authorResponse = modelMapper.map(author, ForumUserResponse.class);
                 broadcast(packetToJSON(new MessageResponsePacket(((MessageRequestPacket) packet).getMessage(), authorResponse)));
             }
+
             case LOGIN_REQUEST -> {
                 WebSocketClient client = handleLogin(webSocket, packet);
                 if (client != null) {
                     webSocket.send(packetToJSON(new LoginResponsePacket(LoginResponseStatus.OK)));
-                    broadcast(packetToJSON(new SystemMessagePacket(client.getUser().getUsername() + " has joined the chat")));
+                    broadcast(packetToJSON(new UserJoinPacket(modelMapper.map(client.getUser(), ForumUserResponse.class))));
                 } else {
                     webSocket.send(packetToJSON(new LoginResponsePacket(LoginResponseStatus.INVALID_TOKEN)));
                 }
             }
+
+            case ONLINE_USERS_REQUEST -> {
+                List<ForumUserResponse> onlineUsers = clientMap.values().stream()
+                        .map(client -> modelMapper.map(client.getUser(), ForumUserResponse.class)).toList();
+
+                broadcast(packetToJSON(new OnlineUsersResponsePacket(onlineUsers)));
+            }
+
             default -> webSocket.send(packetToJSON(new ErrorPacket("Invalid packet type")));
         }
     }
@@ -127,7 +136,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
     private Packet JSONToPacket(String json) throws JsonProcessingException {
         Packet packet = objectMapper.readValue(json, Packet.class);
 
-        switch (packet.getType()){
+        switch (packet.getType()) {
             case LOGIN_REQUEST -> {
                 return objectMapper.readValue(json, LoginRequestPacket.class);
             }
@@ -145,6 +154,9 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
             }
             case ERROR -> {
                 return objectMapper.readValue(json, ErrorPacket.class);
+            }
+            case ONLINE_USERS_REQUEST -> {
+                return objectMapper.readValue(json, OnlineUsersRequestPacket.class);
             }
 
         }
@@ -169,8 +181,8 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
         return webSocketClient;
     }
 
-    private boolean isPacketValid(Packet packet){
-        switch (packet.getType()){
+    private boolean isPacketValid(Packet packet) {
+        switch (packet.getType()) {
             case LOGIN_REQUEST -> {
                 LoginRequestPacket loginRequestPacketPayload = (LoginRequestPacket) packet;
                 return loginRequestPacketPayload.getToken().length() > 0;
@@ -183,6 +195,9 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
             }
             case SYSTEM_MESSAGE -> {
                 return ((SystemMessagePacket) packet).getMessage().length() > 0;
+            }
+            case ONLINE_USERS_REQUEST -> {
+                return true;
             }
             default -> {
                 return false;
