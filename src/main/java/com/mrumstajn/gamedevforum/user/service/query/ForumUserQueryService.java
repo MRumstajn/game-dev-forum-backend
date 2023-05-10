@@ -15,4 +15,6 @@ public interface ForumUserQueryService {
     Long getTotalCount();
 
     Boolean isUsernameTaken(String username);
+
+    List<ForumUser> getTopByReputation();
 }

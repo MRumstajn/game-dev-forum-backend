@@ -89,4 +89,9 @@ public class ForumUserController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/top-reputation")
+    public ResponseEntity<List<ForumUserResponse>> getTopByReputation(){
+        return ResponseEntity.ok(forumUserQueryService.getTopByReputation().stream().map(user -> modelMapper.map(user, ForumUserResponse.class)).toList());
+    }
 }

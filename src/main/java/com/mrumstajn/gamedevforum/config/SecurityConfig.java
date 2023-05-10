@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/users/*/unfollow").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/users/*/is-following").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/users/*/followers").permitAll()
+                .requestMatchers(HttpMethod.GET, "/users/top-reputation").permitAll()
                 .requestMatchers(HttpMethod.GET, "/threads/*").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/threads/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/threads/*").hasAnyAuthority("USER", "ADMIN")

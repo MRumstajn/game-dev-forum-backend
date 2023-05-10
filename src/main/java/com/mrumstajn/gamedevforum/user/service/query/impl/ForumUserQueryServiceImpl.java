@@ -5,6 +5,7 @@ import com.mrumstajn.gamedevforum.user.repository.ForumUserRepository;
 import com.mrumstajn.gamedevforum.user.service.query.ForumUserQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,5 +38,10 @@ public class ForumUserQueryServiceImpl implements ForumUserQueryService {
     @Override
     public Boolean isUsernameTaken(String username) {
         return forumUserRepository.existsByUsername(username);
+    }
+
+    @Override
+    public List<ForumUser> getTopByReputation() {
+        return forumUserRepository.findTopByReputation(Pageable.ofSize(3).withPage(0));
     }
 }
