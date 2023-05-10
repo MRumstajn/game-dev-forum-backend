@@ -62,6 +62,11 @@ public class ApplicationConfig {
         return modelMapper;
     }
 
+    /*@Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
+    }*/
+
     @Bean
     public DispatcherServlet dispatcherServlet() {
         return new DispatcherServlet();
@@ -78,5 +83,10 @@ public class ApplicationConfig {
     @Bean
     public DispatcherServletPath dispatcherServletPath(){
         return () -> "/api";
+    }
+
+    @Bean
+    public Integer webSocketServerPort(){
+        return 10000;
     }
 }

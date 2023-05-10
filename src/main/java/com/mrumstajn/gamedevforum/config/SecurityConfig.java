@@ -1,7 +1,7 @@
 package com.mrumstajn.gamedevforum.config;
 
+import com.mrumstajn.gamedevforum.auth.service.query.AuthorizationQueryService;
 import com.mrumstajn.gamedevforum.filter.JWTTokenFilter;
-import com.mrumstajn.gamedevforum.user.service.query.ForumUserQueryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,9 +15,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, ForumUserQueryService forumUserQueryService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
+                                                   AuthorizationQueryService authorizationQueryService) throws Exception {
+
         return httpSecurity.csrf().disable()
-                .addFilterAfter(new JWTTokenFilter(forumUserQueryService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JWTTokenFilter(authorizationQueryService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/auth/current-user").hasAnyAuthority("USER", "ADMIN")

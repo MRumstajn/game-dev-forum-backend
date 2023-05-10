@@ -1,8 +1,11 @@
 package com.mrumstajn.gamedevforum.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mrumstajn.gamedevforum.auth.service.query.AuthorizationQueryService;
 import com.mrumstajn.gamedevforum.category.dto.request.CreateCategoryRequest;
 import com.mrumstajn.gamedevforum.category.dto.request.SearchCategoriesRequestPageable;
 import com.mrumstajn.gamedevforum.category.entity.Category;
+import com.mrumstajn.gamedevforum.chat.server.WebSocketServer;
 import com.mrumstajn.gamedevforum.user.entity.ForumUser;
 import com.mrumstajn.gamedevforum.user.entity.ForumUserRole;
 import com.mrumstajn.gamedevforum.section.entity.Section;
@@ -17,11 +20,14 @@ import com.mrumstajn.gamedevforum.section.service.query.SectionQueryService;
 import com.mrumstajn.gamedevforum.user.dto.request.CreateForumUserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -46,9 +52,15 @@ public class SetupRunner {
     private final ForumUserQueryService forumUserQueryService;
 
     private final ForumUserCommandService forumUserCommandService;
+    
+    private final AuthorizationQueryService authorizationQueryService;
+    
+    private final ObjectMapper objectMapper;
+
+    private final ModelMapper modelMapper;
 
     @Bean
-    public CommandLineRunner setup() {
+    public CommandLineRunner setup(@Qualifier("taskExecutor") TaskExecutor taskExecutor) {
         return args -> {
             logger.info("Running setup...");
 
@@ -131,6 +143,15 @@ public class SetupRunner {
             if (admin.getRole() != ForumUserRole.ADMIN) {
                 throw new RuntimeException("Failed to assign admin privileges to admin user");
             }
+
+            // start the websocket server for handling chat messages
+            WebSocketServer webSocketServer = new WebSocketServer(10000);
+            webSocketServer.setAuthorizationQueryService(authorizationQueryService);
+            webSocketServer.setObjectMapper(objectMapper);
+            webSocketServer.setModelMapper(modelMapper);
+
+            taskExecutor.execute(webSocketServer::start);
+            logger.info("Started web socket server");
 
             logger.info("Setup complete!");
 
