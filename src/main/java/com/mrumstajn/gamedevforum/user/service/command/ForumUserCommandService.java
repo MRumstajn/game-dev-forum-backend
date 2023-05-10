@@ -12,6 +12,8 @@ public interface ForumUserCommandService {
 
     ForumUser edit(Long id, EditForumUserRequest request);
 
+    ForumUser editReputation(Long id, Long newReputation);
+
     ForumUser changePassword(Long id, ChangeForumUserPasswordRequest request);
 
     ForumUser grantRole(Long id, ForumUserRole role);

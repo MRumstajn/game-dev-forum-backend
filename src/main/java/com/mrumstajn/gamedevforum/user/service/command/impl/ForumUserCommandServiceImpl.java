@@ -63,6 +63,14 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
     }
 
     @Override
+    public ForumUser editReputation(Long id, Long newReputation) {
+        ForumUser user = forumUserQueryService.getById(id);
+        user.setReputation(newReputation);
+
+        return forumUserRepository.save(user);
+    }
+
+    @Override
     @Transactional
     public ForumUser changePassword(Long id, ChangeForumUserPasswordRequest request) {
         if (!isCurrentUser(id)){

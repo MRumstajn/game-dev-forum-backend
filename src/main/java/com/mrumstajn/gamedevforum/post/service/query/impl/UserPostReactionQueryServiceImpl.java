@@ -47,6 +47,11 @@ public class UserPostReactionQueryServiceImpl implements UserPostReactionQuerySe
     }
 
     @Override
+    public Long countByPostIdAndReactionType(Long postId, PostReactionType reactionType) {
+        return userPostReactionRepository.countAllByPostReactionTypeAndPostId(reactionType, postId);
+    }
+
+    @Override
     public UserPostReaction getById(Long id) {
         return userPostReactionRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Post reaction with id " + id + " doe not exist"));
