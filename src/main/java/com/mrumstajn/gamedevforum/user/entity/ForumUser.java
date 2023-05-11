@@ -24,4 +24,6 @@ public class ForumUser {
     private ForumUserRole role;
 
     private String bio;
+
+    private Long reputation;
 }
