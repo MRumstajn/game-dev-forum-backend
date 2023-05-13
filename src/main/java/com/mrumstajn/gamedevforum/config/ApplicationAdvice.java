@@ -2,10 +2,7 @@ package com.mrumstajn.gamedevforum.config;
 
 import com.mrumstajn.gamedevforum.common.response.ErrorCode;
 import com.mrumstajn.gamedevforum.common.response.ErrorResponse;
-import com.mrumstajn.gamedevforum.exception.CannotTargetSelfException;
-import com.mrumstajn.gamedevforum.exception.DuplicateResourceException;
-import com.mrumstajn.gamedevforum.exception.LoginException;
-import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
+import com.mrumstajn.gamedevforum.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +36,10 @@ public class ApplicationAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CannotTargetSelfException.class)
     public ResponseEntity<ErrorResponse> handelCannotTargetSelfException(CannotTargetSelfException e){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage(), ErrorCode.CANNOT_TARGET_SELF));
+    }
+
+    @ExceptionHandler(CannotRateOwnResourceException.class)
+    public ResponseEntity<ErrorResponse> handelCannotRateOwnResourceException(CannotRateOwnResourceException e){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage(), ErrorCode.CANNOT_RATE_OWN_RESOURCE));
     }
 }

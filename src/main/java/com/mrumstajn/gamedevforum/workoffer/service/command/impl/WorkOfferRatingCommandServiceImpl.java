@@ -1,7 +1,9 @@
 package com.mrumstajn.gamedevforum.workoffer.service.command.impl;
 
+import com.mrumstajn.gamedevforum.exception.CannotRateOwnResourceException;
 import com.mrumstajn.gamedevforum.workoffer.dto.request.CreateWorkOfferRatingRequest;
 import com.mrumstajn.gamedevforum.workoffer.dto.request.EditWorkOfferRatingRequest;
+import com.mrumstajn.gamedevforum.workoffer.entity.WorkOffer;
 import com.mrumstajn.gamedevforum.workoffer.entity.WorkOfferRating;
 import com.mrumstajn.gamedevforum.exception.UnauthorizedActionException;
 import com.mrumstajn.gamedevforum.workoffer.repository.WorkOfferRatingRepository;
@@ -30,7 +32,11 @@ public class WorkOfferRatingCommandServiceImpl implements WorkOfferRatingCommand
     @Override
     @Transactional
     public WorkOfferRating create(CreateWorkOfferRatingRequest request) {
-        workOfferQueryService.getById(request.getWorkOfferIdentifier());
+        WorkOffer existingWorkOffer = workOfferQueryService.getById(request.getWorkOfferIdentifier());
+
+        if (java.util.Objects.equals(existingWorkOffer.getAuthor().getId(), UserUtil.getCurrentUser().getId())){
+            throw new CannotRateOwnResourceException("Users cannot rate their own work offers");
+        }
 
         WorkOfferRating existingRating;
         try {

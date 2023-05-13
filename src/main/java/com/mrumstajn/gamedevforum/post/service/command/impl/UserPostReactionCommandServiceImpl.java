@@ -1,6 +1,7 @@
 package com.mrumstajn.gamedevforum.post.service.command.impl;
 
 import com.mrumstajn.gamedevforum.common.constants.UserConstants;
+import com.mrumstajn.gamedevforum.exception.CannotRateOwnResourceException;
 import com.mrumstajn.gamedevforum.post.dto.request.CreateUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.EditUserPostReactionRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchUserPostReactionRequest;
@@ -47,6 +48,10 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     @Transactional
     public UserPostReaction create(CreateUserPostReactionRequest request) {
         Post post = postQueryService.getById(request.getPostIdentifier()); // check if post exists first
+
+        if (Objects.equals(post.getAuthor().getId(), UserUtil.getCurrentUser().getId())){
+            throw new CannotRateOwnResourceException("Users cannot rate their own posts");
+        }
 
         // check if same reaction already exists for the post and the current user
         SearchUserPostReactionRequest userPostReactionRequest = new SearchUserPostReactionRequest();
