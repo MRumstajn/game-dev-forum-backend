@@ -30,17 +30,18 @@ public class WorkOfferRatingCommandServiceImpl implements WorkOfferRatingCommand
     @Override
     @Transactional
     public WorkOfferRating create(CreateWorkOfferRatingRequest request) {
-        workOfferQueryService.getById(request.getWorkOfferId());
+        workOfferQueryService.getById(request.getWorkOfferIdentifier());
 
         WorkOfferRating existingRating;
         try {
-            existingRating = workOfferRatingQueryService.getByUserIdAndWorkOfferId(UserUtil.getCurrentUser().getId(), request.getWorkOfferId());
+            existingRating = workOfferRatingQueryService.getByUserIdAndWorkOfferId(UserUtil.getCurrentUser().getId(), request.getWorkOfferIdentifier());
         } catch (EntityNotFoundException e){
             existingRating = null;
         }
 
         if (existingRating == null){
             existingRating = modelMapper.map(request, WorkOfferRating.class);
+            existingRating.setWorkOfferId(request.getWorkOfferIdentifier());
             existingRating.setUserId(UserUtil.getCurrentUser().getId());
         } else {
             existingRating.setRating(request.getRating());

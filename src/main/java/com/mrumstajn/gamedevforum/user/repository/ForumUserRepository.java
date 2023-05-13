@@ -15,7 +15,7 @@ public interface ForumUserRepository extends JpaRepository<ForumUser, Long>, Sea
     Boolean existsByUsername(String username);
 
     @Query("""
-            SELECT u FROM ForumUser u ORDER BY u.reputation DESC
+            SELECT u FROM ForumUser u WHERE u.reputation > 0 ORDER BY u.reputation DESC
             """)
     List<ForumUser> findTopByReputation(Pageable pageable);
 }
