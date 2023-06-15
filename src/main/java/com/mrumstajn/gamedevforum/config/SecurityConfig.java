@@ -28,6 +28,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/statistics/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/posts/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/posts/search").permitAll()
+                .requestMatchers(HttpMethod.POST, "/posts/search/latest-activity").permitAll()
+                .requestMatchers(HttpMethod.GET, "/posts/search/top/*").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/posts/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/posts/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()

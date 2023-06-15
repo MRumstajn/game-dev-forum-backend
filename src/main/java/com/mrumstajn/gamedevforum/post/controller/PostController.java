@@ -2,7 +2,7 @@ package com.mrumstajn.gamedevforum.post.controller;
 
 import com.mrumstajn.gamedevforum.post.dto.request.CreatePostRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.EditPostRequest;
-import com.mrumstajn.gamedevforum.post.dto.request.SearchLatestPostRequest;
+import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.post.dto.response.PostResponse;
 import com.mrumstajn.gamedevforum.post.entity.Post;
@@ -38,13 +38,23 @@ public class PostController {
     }
 
     @PostMapping("/search/latest-activity")
-    public ResponseEntity<PostResponse> searchByLatestActivity(@RequestBody @Valid SearchLatestPostRequest request){
+    public ResponseEntity<PostResponse> searchByLatestActivity(@RequestBody @Valid SearchThreadForPostRequest request){
         Post latest = postQueryService.getLatest(request);
         if (latest == null){
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(modelMapper.map(latest, PostResponse.class));
+    }
+
+    @GetMapping("/search/top/{threadId}")
+    public ResponseEntity<PostResponse> searchTopPostByLikesInThread(@PathVariable Long threadId) {
+        Post topPostByLikes = postQueryService.getTopByLikesInThread(threadId);
+        if (topPostByLikes == null){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(modelMapper.map(topPostByLikes, PostResponse.class));
     }
 
     @PostMapping

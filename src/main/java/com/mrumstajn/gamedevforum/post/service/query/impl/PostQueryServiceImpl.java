@@ -1,6 +1,6 @@
 package com.mrumstajn.gamedevforum.post.service.query.impl;
 
-import com.mrumstajn.gamedevforum.post.dto.request.SearchLatestPostRequest;
+import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchUserPostReactionCountRequest;
 import com.mrumstajn.gamedevforum.post.dto.response.PostReactionTypeCountResponse;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -81,7 +82,7 @@ public class PostQueryServiceImpl implements PostQueryService {
     }
 
     @Override
-    public Post getLatest(SearchLatestPostRequest request) {
+    public Post getLatest(SearchThreadForPostRequest request) {
         long postCount = postRepository.countAllByThreadId(request.getThreadId());
 
         if (postCount == 0) {
@@ -92,5 +93,34 @@ public class PostQueryServiceImpl implements PostQueryService {
         }
 
         return postRepository.findLatestByCreationDateAndThreadId(request.getThreadId());
+    }
+
+    @Override
+    public Post getTopByLikesInThread(Long threadId) {
+        List<Post> topPostsByLikes = postRepository.findAllTopByLikeCountInThread(threadId);
+        if (topPostsByLikes.size() == 0) {
+            return null;
+        }
+
+        // detect if there are multiple posts with the same number of likes, and if so return null
+        if (topPostsByLikes.size() > 1) {
+            Post topPost = topPostsByLikes.get(0);
+            Post topPostPrevious = topPostsByLikes.get(1);
+
+            SearchUserPostReactionCountRequest searchUserPostReactionCountRequest = new SearchUserPostReactionCountRequest();
+            searchUserPostReactionCountRequest.setPostIds(List.of(topPost.getId(), topPostPrevious.getId()));
+            List<PostReactionTypeCountResponse> reactionCountResponse = userPostReactionQueryService.getReactionCountForAll(searchUserPostReactionCountRequest);
+
+            long topPostLikeCount = reactionCountResponse.stream().filter(response -> Objects.equals(response.getPostId(), topPost.getId()) &&
+                    response.getPostReactionType() == PostReactionType.LIKE).toList().get(0).getCount();
+            long previousTopPostLikeCount = reactionCountResponse.stream().filter(response -> Objects.equals(response.getPostId(), topPostPrevious.getId()) &&
+                    response.getPostReactionType() == PostReactionType.LIKE).toList().get(0).getCount();
+
+            if (topPostLikeCount == previousTopPostLikeCount) {
+                return null;
+            }
+        }
+
+        return topPostsByLikes.get(0);
     }
 }

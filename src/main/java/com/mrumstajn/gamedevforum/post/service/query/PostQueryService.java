@@ -1,6 +1,6 @@
 package com.mrumstajn.gamedevforum.post.service.query;
 
-import com.mrumstajn.gamedevforum.post.dto.request.SearchLatestPostRequest;
+import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.post.entity.Post;
 import org.springframework.data.domain.Page;
@@ -15,5 +15,7 @@ public interface PostQueryService {
 
     Long getTotalCountByThreadId(Long threadId);
 
-    Post getLatest(SearchLatestPostRequest request);
+    Post getLatest(SearchThreadForPostRequest request);
+
+    Post getTopByLikesInThread(Long threadId);
 }

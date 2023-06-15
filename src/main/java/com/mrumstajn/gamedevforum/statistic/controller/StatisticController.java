@@ -7,7 +7,7 @@ import com.mrumstajn.gamedevforum.category.dto.response.CategoryResponse;
 import com.mrumstajn.gamedevforum.statistic.dto.response.CategoryStatisticResponse;
 import com.mrumstajn.gamedevforum.post.dto.response.PostResponse;
 import com.mrumstajn.gamedevforum.thread.dto.request.SearchLatestForumThreadRequest;
-import com.mrumstajn.gamedevforum.post.dto.request.SearchLatestPostRequest;
+import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.statistic.dto.request.ThreadStatisticRequest;
 import com.mrumstajn.gamedevforum.thread.dto.response.ForumThreadResponse;
 import com.mrumstajn.gamedevforum.thread.entity.ForumThread;
@@ -85,7 +85,7 @@ public class StatisticController {
             response.setThreadId(threadId);
             response.setPostCount(postQueryService.getTotalCountByThreadId(threadId));
 
-            Post latestPost = postQueryService.getLatest(new SearchLatestPostRequest(threadId));
+            Post latestPost = postQueryService.getLatest(new SearchThreadForPostRequest(threadId));
             if (latestPost != null) {
                 response.setLatestPost(modelMapper.map(latestPost, PostResponse.class));
             } else {

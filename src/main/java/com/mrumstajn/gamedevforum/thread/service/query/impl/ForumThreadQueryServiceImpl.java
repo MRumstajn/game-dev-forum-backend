@@ -2,7 +2,7 @@ package com.mrumstajn.gamedevforum.thread.service.query.impl;
 
 import com.mrumstajn.gamedevforum.thread.dto.request.SearchForumThreadRequestPageable;
 import com.mrumstajn.gamedevforum.thread.dto.request.SearchLatestForumThreadRequest;
-import com.mrumstajn.gamedevforum.post.dto.request.SearchLatestPostRequest;
+import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.thread.entity.ForumThread;
 import com.mrumstajn.gamedevforum.post.entity.Post;
 import com.mrumstajn.gamedevforum.thread.repository.ForumThreadRepository;
@@ -62,7 +62,7 @@ public class ForumThreadQueryServiceImpl implements ForumThreadQueryService {
         if (threadCount < 2){
             ForumThread latestThread = forumThreadRepository.findFirstByCategoryId(request.getCategoryId());
 
-            Post latestPost = postQueryService.getLatest(new SearchLatestPostRequest(latestThread.getId()));
+            Post latestPost = postQueryService.getLatest(new SearchThreadForPostRequest(latestThread.getId()));
             if (latestPost != null){
                 return latestThread;
             }

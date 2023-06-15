@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchLatestPostRequest {
+public class SearchThreadForPostRequest {
     private Long threadId;
 
 }
