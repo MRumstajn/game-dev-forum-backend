@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 145920230818
+      created: 18-08-2023
+      author: Mauricio Rumštajn
+      changes:
+        - addColumn:
+            tableName: work_offer_category
+            columns:
+              - column:
+                  name: deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

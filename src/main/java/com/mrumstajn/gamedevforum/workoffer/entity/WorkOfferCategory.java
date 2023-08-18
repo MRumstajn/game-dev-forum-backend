@@ -6,8 +6,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE work_offer_category SET deleted = true WHERE id=?")
 @Getter
 @Setter
 public class WorkOfferCategory {
