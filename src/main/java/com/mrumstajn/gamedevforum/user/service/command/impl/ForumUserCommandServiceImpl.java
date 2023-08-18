@@ -1,6 +1,6 @@
 package com.mrumstajn.gamedevforum.user.service.command.impl;
 
-import com.mrumstajn.gamedevforum.auth.service.dto.request.ChangeForumUserPasswordRequest;
+import com.mrumstajn.gamedevforum.auth.dto.request.ChangeForumUserPasswordRequest;
 import com.mrumstajn.gamedevforum.user.dto.request.CreateForumUserRequest;
 import com.mrumstajn.gamedevforum.user.dto.request.EditForumUserRequest;
 import com.mrumstajn.gamedevforum.user.entity.ForumUser;

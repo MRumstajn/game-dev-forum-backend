@@ -1,10 +1,10 @@
 package com.mrumstajn.gamedevforum.auth.controller;
 
-import com.mrumstajn.gamedevforum.auth.service.dto.request.ChangeForumUserPasswordRequest;
-import com.mrumstajn.gamedevforum.auth.service.dto.request.LoginRequest;
+import com.mrumstajn.gamedevforum.auth.dto.request.ChangeForumUserPasswordRequest;
+import com.mrumstajn.gamedevforum.auth.dto.request.LoginRequest;
 import com.mrumstajn.gamedevforum.user.dto.response.EditForumUserResponse;
 import com.mrumstajn.gamedevforum.user.dto.response.ForumUserResponse;
-import com.mrumstajn.gamedevforum.auth.service.dto.response.LoginResponse;
+import com.mrumstajn.gamedevforum.auth.dto.response.LoginResponse;
 import com.mrumstajn.gamedevforum.user.entity.ForumUser;
 import com.mrumstajn.gamedevforum.exception.LoginException;
 import com.mrumstajn.gamedevforum.user.service.command.ForumUserCommandService;

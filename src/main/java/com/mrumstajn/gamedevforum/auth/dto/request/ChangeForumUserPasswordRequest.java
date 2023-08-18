@@ -1,4 +1,4 @@
-package com.mrumstajn.gamedevforum.auth.service.dto.request;
+package com.mrumstajn.gamedevforum.auth.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

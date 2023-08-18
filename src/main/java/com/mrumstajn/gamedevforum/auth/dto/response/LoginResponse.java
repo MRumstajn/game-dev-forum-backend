@@ -1,4 +1,4 @@
-package com.mrumstajn.gamedevforum.auth.service.dto.response;
+package com.mrumstajn.gamedevforum.auth.dto.response;
 
 import com.mrumstajn.gamedevforum.user.dto.response.ForumUserResponse;
 import lombok.AllArgsConstructor;
