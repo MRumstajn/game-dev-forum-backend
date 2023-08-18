@@ -44,6 +44,7 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
         newUser.setJoinDate(LocalDate.now());
         newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         newUser.setRole(ForumUserRole.USER);
+        newUser.setReputation(0L);
 
         return forumUserRepository.save(newUser);
     }
