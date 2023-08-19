@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateNotificationRequest {
     @NotNull
-    private Long recipientId;
+    private Long recipientIdentifier;
 
     @NotNull
     @Size(max = 50)

@@ -5,6 +5,7 @@ import com.mrumstajn.gamedevforum.notification.dto.request.MarkNotificationsAsRe
 import com.mrumstajn.gamedevforum.notification.entity.Notification;
 import com.mrumstajn.gamedevforum.notification.repository.NotificationRepository;
 import com.mrumstajn.gamedevforum.notification.service.command.NotificationCommandService;
+import com.mrumstajn.gamedevforum.user.service.query.ForumUserQueryService;
 import com.mrumstajn.gamedevforum.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
 
     private final ModelMapper modelMapper;
 
+    private final ForumUserQueryService forumUserQueryService;
+
     @Override
     @Transactional
     public List<Notification> createAll(List<CreateNotificationRequest> requests) {
@@ -30,6 +33,7 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
         requests.forEach(request -> {
             Notification notification = modelMapper.map(request, Notification.class);
             notification.setCreationDate(LocalDate.now());
+            notification.setRecipient(forumUserQueryService.getById(request.getRecipientIdentifier()));
 
             createdNotifications.add(notification);
         });

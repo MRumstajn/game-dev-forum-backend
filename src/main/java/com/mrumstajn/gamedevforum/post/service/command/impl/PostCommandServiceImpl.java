@@ -128,7 +128,7 @@ public class PostCommandServiceImpl implements PostCommandService {
 
         notificationCommandService.createAll(recipientIds.stream().map(id -> {
             CreateNotificationRequest notificationRequest = new CreateNotificationRequest();
-            notificationRequest.setRecipientId(id);
+            notificationRequest.setRecipientIdentifier(id);
             notificationRequest.setTitle("New post");
             notificationRequest.setContent(followedUserUsername + " has made a new post in " + threadTitle);
 

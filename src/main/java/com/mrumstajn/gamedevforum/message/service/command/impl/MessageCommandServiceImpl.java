@@ -130,7 +130,7 @@ public class MessageCommandServiceImpl implements MessageCommandService {
 
     private CreateNotificationRequest generateMessageNotificationRequest(Long id) {
         CreateNotificationRequest notificationRequest = new CreateNotificationRequest();
-        notificationRequest.setRecipientId(id);
+        notificationRequest.setRecipientIdentifier(id);
         notificationRequest.setTitle("New message");
         notificationRequest.setContent("You received a new message from " + UserUtil.getCurrentUser().getUsername());
 
