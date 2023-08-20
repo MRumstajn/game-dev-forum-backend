@@ -18,4 +18,6 @@ public interface PostQueryService {
     Post getLatest(SearchThreadForPostRequest request);
 
     Post getTopByLikesInThread(Long threadId);
+
+    Long getTotalPageCountForThread(Long threadId);
 }

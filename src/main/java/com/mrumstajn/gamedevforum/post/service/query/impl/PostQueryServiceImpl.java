@@ -1,5 +1,6 @@
 package com.mrumstajn.gamedevforum.post.service.query.impl;
 
+import com.mrumstajn.gamedevforum.common.constants.PaginationConstants;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchUserPostReactionCountRequest;
@@ -122,5 +123,11 @@ public class PostQueryServiceImpl implements PostQueryService {
         }
 
         return topPostsByLikes.get(0);
+    }
+
+    @Override
+    public Long getTotalPageCountForThread(Long threadId) {
+        int totalPages = Math.round((float) postRepository.countAllByThreadId(threadId) / PaginationConstants.THREAD_PAGE_SIZE);
+        return (long) totalPages;
     }
 }
