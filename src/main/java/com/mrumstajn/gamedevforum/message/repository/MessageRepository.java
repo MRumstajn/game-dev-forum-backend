@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long>, SearchExecutor<Message> {
-    Long countAllByConversationIdAndReadersNotContaining(Long conversationId, ForumUser reader);
+    Long countAllByConversationIdAndDeletedFalseAndReadersNotContaining(Long conversationId, ForumUser reader);
 
     @Query("""
                     SELECT m FROM Message m WHERE m.conversation.id = :conversationId AND

@@ -52,7 +52,7 @@ public class MessageQueryServiceImpl implements MessageQueryService {
 
     @Override
     public Long countUnreadByConversationId(Long conversationId) {
-        return messageRepository.countAllByConversationIdAndReadersNotContaining(conversationId, UserUtil.getCurrentUser());
+        return messageRepository.countAllByConversationIdAndDeletedFalseAndReadersNotContaining(conversationId, UserUtil.getCurrentUser());
     }
 
     @Override
