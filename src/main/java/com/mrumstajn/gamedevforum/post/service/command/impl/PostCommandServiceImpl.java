@@ -72,7 +72,9 @@ public class PostCommandServiceImpl implements PostCommandService {
         List<Long> followerIds = userFollowerQueryService.getFollowersByFollowedUserId(currentUser.getId())
                 .stream().map(ForumUser::getId).toList();
 
-        sendNewPostNotificationTo(followerIds, targetThread.getTitle(), currentUser.getUsername());
+        if (followerIds.size() > 0) {
+            sendNewPostNotificationTo(followerIds, targetThread.getTitle(), currentUser.getUsername());
+        }
 
         // if user is not subscribed to this thread, subscribe them
         List<Long> subscriberIds = threadSubscriptionQueryService.getAllByThreadId(request.getThreadIdentifier())

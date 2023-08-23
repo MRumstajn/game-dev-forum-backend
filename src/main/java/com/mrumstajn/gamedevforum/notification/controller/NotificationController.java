@@ -34,7 +34,7 @@ public class NotificationController {
     @PostMapping("/search")
     public ResponseEntity<Page<NotificationResponse>> search(@RequestBody @Valid SearchNotificationRequestPageable request){
         return ResponseEntity.ok(notificationQueryService.search(request)
-                .map(notification -> modelMapper.map(notification, NotificationResponse.class)));
+          .map(notification -> modelMapper.map(notification, NotificationResponse.class)));
     }
 
     @PostMapping("/mark-as-read")

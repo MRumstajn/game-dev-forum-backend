@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
 
         requests.forEach(request -> {
             Notification notification = modelMapper.map(request, Notification.class);
-            notification.setCreationDate(LocalDate.now());
+            notification.setCreationDateTime(LocalDateTime.now());
             notification.setRecipient(forumUserQueryService.getById(request.getRecipientIdentifier()));
 
             createdNotifications.add(notification);
