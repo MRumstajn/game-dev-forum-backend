@@ -58,6 +58,12 @@ public class ForumUserCommandServiceImpl implements ForumUserCommandService {
 
         ForumUser existingUser = forumUserQueryService.getById(id);
 
+        if (request.getUsername() != null) {
+            if (forumUserQueryService.isUsernameTaken(request.getUsername())){
+                throw new DuplicateResourceException("Username is already taken");
+            }
+        }
+
         modelMapper.map(request, existingUser);
 
         return forumUserRepository.save(existingUser);
