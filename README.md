@@ -22,3 +22,6 @@ Backend project for the GameDeveloperForum app. The backend contains a few layer
    and clicking the run icon
     - otherwise you can simply open Docker and start the existing `game-dev-forum-backend` container
 3. Start the spring boot app
+
+### Configuring the JWT secret
+Set `jwtsecret` JVM variable to a minimum 64 character word. Otherwise a fallback word will be generated every time the application starts.
