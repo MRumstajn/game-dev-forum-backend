@@ -35,6 +35,6 @@ public class JWTCommandServiceImpl implements JWTCommandService {
                         userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 //.setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(jwtExpirationInSeconds)))
-                .signWith(SignatureAlgorithm.HS256, System.getenv("jwtsecret").getBytes()).compact();
+                .signWith(SignatureAlgorithm.HS256, System.getProperty("jwtsecret").getBytes()).compact();
     }
 }

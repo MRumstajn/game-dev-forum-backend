@@ -27,7 +27,7 @@ public class AuthorizationQueryServiceImpl implements AuthorizationQueryService 
     public UsernamePasswordAuthenticationToken getAuthenticationFromJWTToken(String token) {
         UsernamePasswordAuthenticationToken authenticationToken = null;
 
-        String jwtSecret = System.getenv("jwtsecret");
+        String jwtSecret = System.getProperty("jwtsecret");
         try {
             if (token != null) {
                 if (token.contains("Bearer")) {

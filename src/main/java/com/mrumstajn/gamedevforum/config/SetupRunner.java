@@ -64,6 +64,17 @@ public class SetupRunner {
         return args -> {
             logger.info("Running setup...");
 
+            // generate JWT secret if not provided
+            String jwtSecret = System.getenv("jwtsecret");
+            if (jwtSecret == null){
+                logger.info("jwtsecret env variable not found, generating secret...");
+                System.setProperty("jwtsecret", generateRandomPassword(64));
+            }
+            else {
+                System.setProperty("jwtsecret", jwtSecret);
+                logger.info("jwtsecret env variable found, using that value");
+            }
+
             // create root sections
             Section newsSection = null;
 
