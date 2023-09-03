@@ -16,11 +16,6 @@ public class SearchWorkOfferRequestPageable extends BaseSortablePageableRequest 
 
     private BigDecimal pricePerHourToIncluding;
 
-    private Integer averageRatingFromIncluding;
-
-    @Range(min = 1, max = 5)
-    private Integer averageRatingToIncluding;
-
     private String authorUsername;
 
     private Long workOfferCategoryId;
