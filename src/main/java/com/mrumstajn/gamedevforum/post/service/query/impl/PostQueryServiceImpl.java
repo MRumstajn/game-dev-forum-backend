@@ -49,7 +49,7 @@ public class PostQueryServiceImpl implements PostQueryService {
 
         // username filter
         if (request.getAuthorUsername() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("author").get("username"), request.getAuthorUsername()));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("username")), "%" + request.getAuthorUsername().toLowerCase() + "%"));
         }
 
         // thread filter
@@ -106,7 +106,7 @@ public class PostQueryServiceImpl implements PostQueryService {
 
         // username filter
         if (request.getAuthorUsername() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("author").get("username"), request.getAuthorUsername()));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("username")), "%" + request.getAuthorUsername().toLowerCase() + "%"));
         }
 
         // thread filter
