@@ -7,12 +7,15 @@ import com.mrumstajn.gamedevforum.post.dto.request.SearchUserPostReactionCountRe
 import com.mrumstajn.gamedevforum.post.dto.response.PostReactionTypeCountResponse;
 import com.mrumstajn.gamedevforum.post.entity.Post;
 import com.mrumstajn.gamedevforum.post.entity.PostReactionType;
+import com.mrumstajn.gamedevforum.post.entity.UserPostReaction;
 import com.mrumstajn.gamedevforum.post.repository.PostRepository;
 import com.mrumstajn.gamedevforum.post.service.query.PostQueryService;
 import com.mrumstajn.gamedevforum.post.service.query.UserPostReactionQueryService;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
-import net.croz.nrich.search.api.model.SearchConfiguration;
 import net.croz.nrich.search.api.util.PageableUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,6 +32,8 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     private final UserPostReactionQueryService userPostReactionQueryService;
 
+    private final EntityManager entityManager;
+
     @Override
     public Post getById(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post with id " + id + " not found"));
@@ -36,40 +41,114 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     @Override
     public Page<Post> search(SearchPostRequestPageable request) {
-        SearchConfiguration<Post, Post, SearchPostRequestPageable> searchConfiguration = SearchConfiguration.<Post, Post, SearchPostRequestPageable>builder()
-                .resolvePropertyMappingUsingPrefix(true)
-                .resultClass(Post.class)
-                .build();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Post> query = criteriaBuilder.createQuery(Post.class);
+        Root<Post> root = query.from(Post.class);
 
-        Page<Post> matches = postRepository.findAll(request, searchConfiguration, PageableUtil.convertToPageable(request));
+        List<Predicate> predicates = new ArrayList<>();
 
-        SearchUserPostReactionCountRequest reactionCountRequest = new SearchUserPostReactionCountRequest();
-        reactionCountRequest.setPostIds(matches.map(Post::getId).stream().toList());
-        List<PostReactionTypeCountResponse> typeCountResponses = userPostReactionQueryService.getReactionCountForAll(reactionCountRequest);
+        // username filter
+        if (request.getAuthorUsername() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("author").get("username"), request.getAuthorUsername()));
+        }
 
-        List<Long> matchedPostsToRemove = new ArrayList<>();
+        // thread filter
+        if (request.getThreadId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("thread").get("id"), request.getThreadId()));
+        }
 
-        // filter by likes
+        // like filter
         if (request.getLikesFromIncluding() != null) {
-            typeCountResponses.forEach(response -> {
-                if (response.getPostReactionType() == PostReactionType.LIKE && response.getCount() < request.getLikesFromIncluding()) {
-                    matchedPostsToRemove.add(response.getPostId());
-                }
-            });
+            Subquery<Long> likeCountSubquery = query.subquery(Long.class);
+            Root<UserPostReaction> reactionRoot = likeCountSubquery.from(UserPostReaction.class);
+            likeCountSubquery.select(criteriaBuilder.count(reactionRoot));
+            likeCountSubquery.where(
+              criteriaBuilder.equal(reactionRoot.get("postId"), root.get("id")),
+              criteriaBuilder.equal(reactionRoot.get("postReactionType"), PostReactionType.LIKE)
+            );
+
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(likeCountSubquery, request.getLikesFromIncluding()));
         }
 
-        // filter by dislikes
+        // dislike filter
         if (request.getDislikesFromIncluding() != null) {
-            typeCountResponses.forEach(response -> {
-                if (response.getPostReactionType() == PostReactionType.DISLIKE && response.getCount() < request.getDislikesFromIncluding()) {
-                    matchedPostsToRemove.add(response.getPostId());
-                }
-            });
-        }
-        
-        List<Post> filteredPosts = matches.filter(match -> !matchedPostsToRemove.contains(match.getId())).toList();
+            Subquery<Long> dislikeCountSubquery = query.subquery(Long.class);
+            Root<UserPostReaction> reactionRoot = dislikeCountSubquery.from(UserPostReaction.class);
+            dislikeCountSubquery.select(criteriaBuilder.count(reactionRoot));
+            dislikeCountSubquery.where(
+              criteriaBuilder.equal(reactionRoot.get("postId"), root.get("id")),
+              criteriaBuilder.equal(reactionRoot.get("postReactionType"), PostReactionType.DISLIKE)
+            );
 
-        return new PageImpl<>(filteredPosts, matches.getPageable(), matches.getTotalElements());
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(dislikeCountSubquery, request.getDislikesFromIncluding()));
+        }
+
+        if (!predicates.isEmpty()) {
+            query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+        }
+
+        query.orderBy(criteriaBuilder.asc(root.get("creationDateTime")));
+
+        TypedQuery<Post> mainQuery = entityManager.createQuery(query);
+        mainQuery.setMaxResults(request.getPageSize());
+        mainQuery.setFirstResult(request.getPageNumber() * request.getPageSize());
+
+        // Return the paged result
+        return new PageImpl<>(mainQuery.getResultList(), PageableUtil.convertToPageable(request), countAllBasedOnSearchRequest(request));
+    }
+
+    private Long countAllBasedOnSearchRequest(SearchPostRequestPageable request) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<Post> root = query.from(Post.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        // username filter
+        if (request.getAuthorUsername() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("author").get("username"), request.getAuthorUsername()));
+        }
+
+        // thread filter
+        if (request.getThreadId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("thread").get("id"), request.getThreadId()));
+        }
+
+        // like filter
+        if (request.getLikesFromIncluding() != null) {
+            Subquery<Long> likeCountSubquery = query.subquery(Long.class);
+            Root<UserPostReaction> reactionRoot = likeCountSubquery.from(UserPostReaction.class);
+            likeCountSubquery.select(criteriaBuilder.count(reactionRoot));
+            likeCountSubquery.where(
+              criteriaBuilder.equal(reactionRoot.get("postId"), root.get("id")),
+              criteriaBuilder.equal(reactionRoot.get("postReactionType"), PostReactionType.LIKE)
+            );
+
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(likeCountSubquery, request.getLikesFromIncluding()));
+        }
+
+        // dislike filter
+        if (request.getDislikesFromIncluding() != null) {
+            Subquery<Long> dislikeCountSubquery = query.subquery(Long.class);
+            Root<UserPostReaction> reactionRoot = dislikeCountSubquery.from(UserPostReaction.class);
+            dislikeCountSubquery.select(criteriaBuilder.count(reactionRoot));
+            dislikeCountSubquery.where(
+              criteriaBuilder.equal(reactionRoot.get("postId"), root.get("id")),
+              criteriaBuilder.equal(reactionRoot.get("postReactionType"), PostReactionType.DISLIKE)
+            );
+
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(dislikeCountSubquery, request.getDislikesFromIncluding()));
+        }
+
+        if (!predicates.isEmpty()) {
+            query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+        }
+
+        query.select(criteriaBuilder.count(root));
+
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+
+        return typedQuery.getSingleResult();
     }
 
     @Override

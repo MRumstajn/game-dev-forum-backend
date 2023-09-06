@@ -9,8 +9,10 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+@Table(name = "post")
 @Getter
 @Setter
 @Where(clause = "deleted = false")
@@ -31,4 +33,7 @@ public class Post {
     private ForumThread thread;
 
     private Boolean deleted = false;
+
+    @ManyToMany(mappedBy = "postId")
+    private List<UserPostReaction> userPostReactions;
 }
