@@ -60,7 +60,7 @@ public class PostController {
 
         Integer topPostPage = null;
         Long totalPages = postQueryService.getTotalPageCountForThread(threadId);
-        for (int i = 0; i < totalPages; i++) {
+        for (int i = 0; i <= totalPages; i++) {
             SearchPostRequestPageable searchPostRequestPageable = new SearchPostRequestPageable();
             searchPostRequestPageable.setThreadId(threadId);
             searchPostRequestPageable.setPageNumber(i);
