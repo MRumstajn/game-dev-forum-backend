@@ -47,6 +47,29 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
     @Override
     @Transactional
     public UserPostReaction create(CreateUserPostReactionRequest request) {
+        /*
+        *
+        * fetch existing reaction
+        *   exists?
+        *       yes - edit it
+        *       no - create it
+        *           which type is it currently?
+        *               like - create and increase reputation
+        *               dislike - create and decrease reputation
+        *
+        *
+        * editing
+        *   which type is it currently?
+        *       like - remove like and lower reputation
+        *       dislike - remove dislike and increase reputation
+        *
+        * deleting
+        *   which type is it currently?
+        *       like - delete and lower reputation
+        *       dislike - delete and raise reputation
+        *
+        * */
+
         Post post = postQueryService.getById(request.getPostIdentifier()); // check if post exists first
 
         if (Objects.equals(post.getAuthor().getId(), UserUtil.getCurrentUser().getId())){
@@ -71,8 +94,6 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
                     EditUserPostReactionRequest editUserPostReactionRequest = new EditUserPostReactionRequest();
                     editUserPostReactionRequest.setPostReactionType(request.getPostReactionType());
 
-                    //changeAuthorsReputation(post.getAuthor().getId(), existingReaction.getPostReactionType() == PostReactionType.DISLIKE);
-
                     return edit(existingReaction.getId(), editUserPostReactionRequest);
                 }
             }
@@ -83,7 +104,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         postReaction.setUserId(UserUtil.getCurrentUser().getId());
         postReaction.setPostId(request.getPostIdentifier());
 
-        changeAuthorsReputation(post.getAuthor().getId(), postReaction.getPostReactionType() == PostReactionType.LIKE);
+        changeAuthorsReputation(post.getAuthor().getId(), request.getPostReactionType(), null);
 
     return userPostReactionRepository.save(postReaction);
 
@@ -105,7 +126,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         }
 
         // if reaction of different type exists, update the type to the specified type
-        changeAuthorsReputation(post.getAuthor().getId(), existingPostReaction.getPostReactionType() == PostReactionType.DISLIKE);
+        changeAuthorsReputation(post.getAuthor().getId(), request.getPostReactionType(), existingPostReaction.getPostReactionType());
 
         existingPostReaction.setPostReactionType(request.getPostReactionType());
 
@@ -122,7 +143,14 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
             throw new UnauthorizedActionException("User is not the creator of this reaction");
         }
 
-        changeAuthorsReputation(post.getAuthor().getId(), existingPostReaction.getPostReactionType() == PostReactionType.DISLIKE);
+        Long reputation = post.getAuthor().getReputation();
+        if (existingPostReaction.getPostReactionType() == PostReactionType.LIKE) {
+            reputation -= 1;
+        } else {
+            reputation += 1;
+        }
+
+        changeAuthorsReputation(post.getAuthor().getId(),  reputation);
 
         userPostReactionRepository.delete(existingPostReaction);
     }
@@ -152,13 +180,28 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         return Objects.equals(reaction.getUserId(), UserUtil.getCurrentUser().getId());
     }
 
-    private void changeAuthorsReputation(Long userId, boolean add){
+    private void changeAuthorsReputation(Long userId, PostReactionType reactionType, PostReactionType previousReactionType){
         ForumUser author = forumUserQueryService.getById(userId);
 
-        if (add && author.getReputation() < UserConstants.MAX_USER_REPUTATION){
-            forumUserCommandService.editReputation(author.getId(), author.getReputation() + 1L);
-        } else if (!add && author.getReputation() > 0){
-            forumUserCommandService.editReputation(author.getId(), author.getReputation() - 1L);
+        /*
+        * reaction action table
+        *
+        * current    previous   reputation
+        * LIKE       null       +1
+        * LIKE       DISLIKE    +2
+        * DISLIKE    null       -1
+        * DISLIKE    LIKE       -2
+        *
+        * */
+
+        if (reactionType == PostReactionType.LIKE && previousReactionType == null) {
+            changeAuthorsReputation(author.getId(), author.getReputation() + 1);
+        } else if (reactionType == PostReactionType.LIKE && previousReactionType == PostReactionType.DISLIKE) {
+            changeAuthorsReputation(author.getId(), author.getReputation() + 2);
+        } else if (reactionType == PostReactionType.DISLIKE && previousReactionType == null) {
+            changeAuthorsReputation(author.getId(), author.getReputation() - 1);
+        } else if (reactionType == PostReactionType.DISLIKE && previousReactionType == PostReactionType.LIKE) {
+            changeAuthorsReputation(author.getId(), author.getReputation() - 2);
         }
     }
 
