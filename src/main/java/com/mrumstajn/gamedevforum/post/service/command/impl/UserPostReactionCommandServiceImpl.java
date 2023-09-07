@@ -71,7 +71,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
                     EditUserPostReactionRequest editUserPostReactionRequest = new EditUserPostReactionRequest();
                     editUserPostReactionRequest.setPostReactionType(request.getPostReactionType());
 
-                    changeAuthorsReputation(post.getAuthor().getId(), editUserPostReactionRequest.getPostReactionType() == PostReactionType.LIKE);
+                    //changeAuthorsReputation(post.getAuthor().getId(), existingReaction.getPostReactionType() == PostReactionType.DISLIKE);
 
                     return edit(existingReaction.getId(), editUserPostReactionRequest);
                 }
@@ -86,6 +86,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         changeAuthorsReputation(post.getAuthor().getId(), postReaction.getPostReactionType() == PostReactionType.LIKE);
 
     return userPostReactionRepository.save(postReaction);
+
     }
 
     @Override
@@ -104,9 +105,9 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
         }
 
         // if reaction of different type exists, update the type to the specified type
-        existingPostReaction.setPostReactionType(request.getPostReactionType());
+        changeAuthorsReputation(post.getAuthor().getId(), existingPostReaction.getPostReactionType() == PostReactionType.DISLIKE);
 
-        changeAuthorsReputation(post.getAuthor().getId(), existingPostReaction.getPostReactionType() == PostReactionType.LIKE);
+        existingPostReaction.setPostReactionType(request.getPostReactionType());
 
         return userPostReactionRepository.save(existingPostReaction);
     }
@@ -121,7 +122,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
             throw new UnauthorizedActionException("User is not the creator of this reaction");
         }
 
-        changeAuthorsReputation(post.getAuthor().getId(), existingPostReaction.getPostReactionType() != PostReactionType.LIKE);
+        changeAuthorsReputation(post.getAuthor().getId(), existingPostReaction.getPostReactionType() == PostReactionType.DISLIKE);
 
         userPostReactionRepository.delete(existingPostReaction);
     }
@@ -156,7 +157,7 @@ public class UserPostReactionCommandServiceImpl implements UserPostReactionComma
 
         if (add && author.getReputation() < UserConstants.MAX_USER_REPUTATION){
             forumUserCommandService.editReputation(author.getId(), author.getReputation() + 1L);
-        } else if (!add){
+        } else if (!add && author.getReputation() > 0){
             forumUserCommandService.editReputation(author.getId(), author.getReputation() - 1L);
         }
     }
