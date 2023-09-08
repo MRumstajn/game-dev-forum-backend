@@ -2,6 +2,7 @@ package com.mrumstajn.gamedevforum.user.controller;
 
 import com.mrumstajn.gamedevforum.user.dto.request.CreateForumUserRequest;
 import com.mrumstajn.gamedevforum.user.dto.request.EditForumUserRequest;
+import com.mrumstajn.gamedevforum.user.dto.request.GetManyUsersRequest;
 import com.mrumstajn.gamedevforum.user.dto.response.CheckIsFollowingResponse;
 import com.mrumstajn.gamedevforum.user.dto.response.EditForumUserResponse;
 import com.mrumstajn.gamedevforum.user.dto.response.ForumUserResponse;
@@ -41,6 +42,12 @@ public class ForumUserController {
     @GetMapping("/{id}")
     public ResponseEntity<ForumUserResponse> getById(@PathVariable Long id){
         return ResponseEntity.ok(modelMapper.map(forumUserQueryService.getById(id), ForumUserResponse.class));
+    }
+
+    @PostMapping("/get-many")
+    public ResponseEntity<List<ForumUserResponse>> getMany(@RequestBody @Valid GetManyUsersRequest request) {
+        List<ForumUser> users = forumUserQueryService.getAllById(request.getUserIds());
+        return ResponseEntity.ok(users.stream().map(user -> modelMapper.map(user, ForumUserResponse.class)).toList());
     }
 
     @PostMapping
