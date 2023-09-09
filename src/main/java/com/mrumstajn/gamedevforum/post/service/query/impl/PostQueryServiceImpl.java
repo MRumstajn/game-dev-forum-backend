@@ -47,14 +47,28 @@ public class PostQueryServiceImpl implements PostQueryService {
 
         List<Predicate> predicates = new ArrayList<>();
 
+        // thread filter
+        if (request.getThreadId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("thread").get("id"), request.getThreadId()));
+        }
+
+        // user id filter
+        if (request.getAuthorId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("author").get("id"), request.getAuthorId()));
+        }
+
         // username filter
         if (request.getAuthorUsername() != null) {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("username")), "%" + request.getAuthorUsername().toLowerCase() + "%"));
         }
 
-        // thread filter
-        if (request.getThreadId() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("thread").get("id"), request.getThreadId()));
+        // creation date time filter
+        if (request.getCreationDateTimeFromIncluding() != null && request.getCreationDateTimeToIncluding() == null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("creationDateTime"), request.getCreationDateTimeFromIncluding()));
+        } else if (request.getCreationDateTimeToIncluding() != null && request.getCreationDateTimeFromIncluding() == null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("creationDateTime"), request.getCreationDateTimeToIncluding()));
+        } else if (request.getCreationDateTimeFromIncluding() != null && request.getCreationDateTimeToIncluding() != null) {
+            predicates.add(criteriaBuilder.between(root.get("creationDateTime"), request.getCreationDateTimeFromIncluding(), request.getCreationDateTimeToIncluding()));
         }
 
         // like filter
@@ -104,14 +118,28 @@ public class PostQueryServiceImpl implements PostQueryService {
 
         List<Predicate> predicates = new ArrayList<>();
 
+        // thread filter
+        if (request.getThreadId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("thread").get("id"), request.getThreadId()));
+        }
+
+        // user id filter
+        if (request.getAuthorId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("author").get("id"), request.getAuthorId()));
+        }
+
         // username filter
         if (request.getAuthorUsername() != null) {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("username")), "%" + request.getAuthorUsername().toLowerCase() + "%"));
         }
 
-        // thread filter
-        if (request.getThreadId() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("thread").get("id"), request.getThreadId()));
+        // creation date time filter
+        if (request.getCreationDateTimeFromIncluding() != null && request.getCreationDateTimeToIncluding() == null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("creationDateTime"), request.getCreationDateTimeFromIncluding()));
+        } else if (request.getCreationDateTimeToIncluding() != null && request.getCreationDateTimeFromIncluding() == null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("creationDateTime"), request.getCreationDateTimeToIncluding()));
+        } else if (request.getCreationDateTimeFromIncluding() != null && request.getCreationDateTimeToIncluding() != null) {
+            predicates.add(criteriaBuilder.between(root.get("creationDateTime"), request.getCreationDateTimeFromIncluding(), request.getCreationDateTimeToIncluding()));
         }
 
         // like filter
