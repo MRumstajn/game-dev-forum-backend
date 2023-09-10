@@ -7,11 +7,13 @@ import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.post.dto.response.PostResponse;
 import com.mrumstajn.gamedevforum.post.dto.response.TopPostResponse;
+import com.mrumstajn.gamedevforum.post.dto.response.TotalPostsResponse;
 import com.mrumstajn.gamedevforum.post.entity.Post;
 import com.mrumstajn.gamedevforum.post.service.command.PostCommandService;
 import com.mrumstajn.gamedevforum.post.service.query.PostQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -88,6 +90,11 @@ public class PostController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/total-posts/{threadId}")
+    public ResponseEntity<TotalPostsResponse> getTotalPostsInfo(@PathVariable Long threadId) {
+        return ResponseEntity.ok(postQueryService.getTotalPostsInfoForThread(threadId));
     }
 
     @PostMapping

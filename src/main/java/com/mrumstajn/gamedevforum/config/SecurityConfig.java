@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/posts/search/top/*").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/posts/*").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/posts/*").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/posts/total-posts/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/users/*").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyAuthority("USER", "ADMIN")

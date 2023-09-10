@@ -5,6 +5,7 @@ import com.mrumstajn.gamedevforum.post.dto.request.SearchThreadForPostRequest;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchPostRequestPageable;
 import com.mrumstajn.gamedevforum.post.dto.request.SearchUserPostReactionCountRequest;
 import com.mrumstajn.gamedevforum.post.dto.response.PostReactionTypeCountResponse;
+import com.mrumstajn.gamedevforum.post.dto.response.TotalPostsResponse;
 import com.mrumstajn.gamedevforum.post.entity.Post;
 import com.mrumstajn.gamedevforum.post.entity.PostReactionType;
 import com.mrumstajn.gamedevforum.post.entity.UserPostReaction;
@@ -236,5 +237,13 @@ public class PostQueryServiceImpl implements PostQueryService {
     public Long getTotalPageCountForThread(Long threadId) {
         int totalPages = Math.round((float) postRepository.countAllByThreadId(threadId) / PaginationConstants.THREAD_PAGE_SIZE);
         return (long) totalPages;
+    }
+
+    @Override
+    public TotalPostsResponse getTotalPostsInfoForThread(Long threadId) {
+        Long totalPosts = postRepository.countAllByThreadId(threadId);
+        Integer totalPages = (int) Math.ceil((double) totalPosts / PaginationConstants.THREAD_PAGE_SIZE);
+
+        return new TotalPostsResponse(totalPosts, totalPages);
     }
 }
